@@ -43,6 +43,12 @@ int ShowStat();//스텟 보여주기
 
 int ShowArmor();//장비창 
 
+int ShowInventory();//인벤토리 
+
+int SelectItem();//아이템선택 
+
+int Useitem(int Num);
+
 int ColorString(int Color,char String[]);//색깔 코드 바꾸기 함수 
 
 int Line()
@@ -123,19 +129,17 @@ struct stat Mob[2];
 19:없음 
 */
 
-int Item[19] = {5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-
 int ItemPrize[19] = {10,50,1000,10000,100000,50,1000,10000,100000,50,50,50,70,30,100,70,20,150,0};
 
-char ItemName[19][50] = {"귀환석",
-"채력 물약(소)[Hp 50 회복]",
-"채력 물약(중)[Hp 750 회복]",
-"채력 물약(대)[Hp 5,000 회복]",
-"채력 물약(특대)[Hp 30,000 회복]",
-"마나 물약(소)[Pp 50 회복]",
-"마나 물약(중)[Pp 750 회복]",
-"마나 물약(대)[Pp 5,000 회복]",
-"마나 물약(특대)[Pp 30,000 회복]",
+char ItemName[19][50] = {"귀환석\n기절시 마을로 귀환시켜줍니다.",
+"채력 물약(소)\nHp를 50 회복합니다.",
+"채력 물약(중)\nHp를 750 회복합니다.",
+"채력 물약(대)\nHp를 5,000 회복합니다.",
+"채력 물약(특대)\nHp를 30,000 회복합니다.",
+"마나 물약(소)\nPp를 50 회복합니다.",
+"마나 물약(중)\nPp를 750 회복합니다.",
+"마나 물약(대)\nPp를 5,000 회복합니다.",
+"마나 물약(특대)\nPp를 30,000 회복합니다.",
 "초보자의 목검",
 "초보자의 나무 활",
 "참나무 지팡이",
@@ -148,7 +152,11 @@ char ItemName[19][50] = {"귀환석",
 "없음",
 };
 
-
+int Slot[2][32] = 
+{
+	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},//아이템코드 
+	{5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}//아이템갯수 
+};
 
 int Money = 100;//돈 
 
@@ -249,6 +257,8 @@ int City()//마을
 			
 		case 4:
 			ShowArmor();
+			ShowInventory();
+			SelectItem();
 			goto B1;
 			break;
 			
@@ -498,13 +508,13 @@ int CheckPlayerDied()//플래이어 사망여부
 		ColorString(4,"기절하셨습니다.\n");
 		Sleep(800);
 		
-		if(Item[0] > 0){
+		if(Slot[1][0] > 0){
 			
 			Line();
 			ColorString(4,"귀환석이 남아 있어 사망하지 않고 마을로 귀환합니다.\n");
 			Sleep(800);
 			p.Hp = 1;
-			Item[0] -= 1;
+			Slot[1][0] -= 1;
 			City();
 			
 		}
@@ -701,7 +711,7 @@ int BuyItem(int ItemNum)//아이템 구매
 	
 	if(Money > ItemPrize[ItemNum]){
 		
-		Item[ItemNum] += 1;
+		Slot[1][ItemNum] += 1;
 		Money -= ItemPrize[ItemNum];
 		
 		Line();
@@ -765,18 +775,82 @@ int ShowArmor()//장비창
 	printf("모자:%s\n",ItemName[p.Hat-1]);
 	printf("갑옷:%s\n",ItemName[p.Body-1]);
 	printf("바지:%s\n",ItemName[p.Leggings-1]);
-	printf("신발:%s",ItemName[p.Shose-1]);
-	printf("무기:%s",ItemName[p.Wepon-1]);
-	printf("방패:%s",ItemName[p.Shiled-1]);
+	printf("신발:%s\n",ItemName[p.Shose-1]);
+	printf("무기:%s\n",ItemName[p.Wepon-1]);
+	printf("방패:%s\n",ItemName[p.Shiled-1]);
 	
 } 
 
 int ShowInventory()//인벤토리
 {
 	
+	int i = 0;
+	
+	Line();
+	
+	ColorString(1,"-인벤토리-\n");
+	
+	Line();
+	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]\n");
+	
+	while(1){
+		
+		if(Slot[1][i] > 0){
+			
+			Line();
+			
+			ColorString(15,"");
+			
+			printf("%d:%s\n",i+1,ItemName[Slot[0][i]]);
+			
+			i += 1;
+			
+		}
+		else{
+			
+			break;
+			
+		}
+		
+	}
 	
 	
 } 
+
+int SelectItem()
+{
+	
+	int Select = 0;
+	
+	scanf("%d",&Select);
+	
+	Select -= 1;
+	
+	Useitem(Select);
+	
+}
+
+int Useitem(int Num)
+{
+
+	if(Slot[1][Num] > 0){
+		
+		switch(Slot[0][Num]){
+		
+			case 0:
+				Line();
+				ColorString(4,"마을로 귀환합니다.\n");
+				Sleep(800);
+				break;
+				
+			case 1:
+				Line();
+		
+		}
+		
+	}
+	
+}
 
 int ColorString(int Color,char String[])//색깔 택스트 출력 
 {
