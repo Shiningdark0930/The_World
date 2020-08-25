@@ -23,7 +23,11 @@ cpp 파일은 Dev C++에서 작성되었습니다!
 수정한 파일을 배포할때는 저한테 허가를 맡아 주세요!
 버그고쳐땅
 
-20/8/25 Update Note
+beta 0.1
+Basic Code.
 
-Make Use Item System.
-you can use potions on Fight and dungeon.
+beta 0.11(20/8/25)
+Now you can use Potion.
+
+beta 0.12(20/8/25)
+If you faint, Your Exp Set 0, And Your MaxExp 2X.
