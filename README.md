@@ -24,22 +24,40 @@ cpp 파일은 Dev C++에서 작성되었습니다!
 버그고쳐땅
 
 beta 0.1
+
 Basic Code.
 
+
 beta 0.11(20/8/25)
+
 Now you can use Potion.
 
+
 beta 0.12(20/8/25)
+
 Added More Mobs.
+
+
 -Slime Lump
+
 -Skeleton soldier
+
 -Skeleton
+
 -Old Skeleton
+
 -Goblin
+
 -Hop Goblin
+
 -Troll
+
 -Oak
+
 -Golam(Boss)
 
+
+
 beta 0.13(20/8/25)
+
 If you faint, Your Exp Set 0, And Your MaxExp 2X.
