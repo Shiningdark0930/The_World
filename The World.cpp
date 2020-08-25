@@ -110,7 +110,7 @@ struct stat
 	
 	//아이템 소지
 		
-	int Slot[32][2];//1차는 아이템코드, 2차는 보유 갯수 
+	int Item[32][2];//1차는 아이템코드, 2차는 보유 갯수 
 	
 		
 }; 
@@ -128,6 +128,8 @@ struct stat Mob[2];
 10~18:(초보자의)검,활,지팡이,방패,투구,갑옷,바지,신발,로브 
 19:없음 
 */
+
+int Item[19] = {5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 int ItemPrize[19] = {10,50,1000,10000,100000,50,1000,10000,100000,50,50,50,70,30,100,70,20,150,0};
 
@@ -150,12 +152,6 @@ char ItemName[19][50] = {"귀환석\n기절시 마을로 귀환시켜줍니다.",
 "토끼 가죽 신발",
 "토끼 가죽 로브",
 "없음",
-};
-
-int Slot[2][32] = 
-{
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},//아이템코드 
-	{5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}//아이템갯수 
 };
 
 int Money = 100;//돈 
@@ -508,13 +504,13 @@ int CheckPlayerDied()//플래이어 사망여부
 		ColorString(4,"기절하셨습니다.\n");
 		Sleep(800);
 		
-		if(Slot[1][0] > 0){
+		if(Item[0] > 0){
 			
 			Line();
 			ColorString(4,"귀환석이 남아 있어 사망하지 않고 마을로 귀환합니다.\n");
 			Sleep(800);
 			p.Hp = 1;
-			Slot[1][0] -= 1;
+			Item[0] -= 1;
 			City();
 			
 		}
@@ -711,7 +707,7 @@ int BuyItem(int ItemNum)//아이템 구매
 	
 	if(Money > ItemPrize[ItemNum]){
 		
-		Slot[1][ItemNum] += 1;
+		Item[ItemNum] += 1;
 		Money -= ItemPrize[ItemNum];
 		
 		Line();
@@ -784,36 +780,11 @@ int ShowArmor()//장비창
 int ShowInventory()//인벤토리
 {
 	
-	int i = 0;
+	
 	
 	Line();
 	
-	ColorString(1,"-인벤토리-\n");
-	
-	Line();
-	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]\n");
-	
-	while(1){
-		
-		if(Slot[1][i] > 0){
-			
-			Line();
-			
-			ColorString(15,"");
-			
-			printf("%d:%s\n",i+1,ItemName[Slot[0][i]]);
-			
-			i += 1;
-			
-		}
-		else{
-			
-			break;
-			
-		}
-		
-	}
-	
+	ColorString(1,"-인벤토리-\n");	
 	
 } 
 
@@ -822,25 +793,56 @@ int SelectItem()
 	
 	int Select = 0;
 	
-	scanf("%d",&Select);
+	int i = 0;
+
+	Line();
+	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]\n");
 	
-	Select -= 1;
+	while(i < 19){
+		
+		if(Item[i] > 0){
+			
+			Line();
+			
+			ColorString(15,"");
+			
+			printf("%d:%s\n",i+1,ItemName[i]);
+			
+			i += 1;
+			
+		}
+		
+	}
 	
-	Useitem(Select);
+	scanf("%d", &Select);
 	
+	if(Item[Select-1] > 0){
+		
+		Useitem(Select-1);
+		
+	}
+	else{
+		
+		Line();
+		ColorString(5,"아이템이 존재하지 않거나 갯수가 부족합니다!\n");
+		
+	}
+		
 }
 
 int Useitem(int Num)
 {
 
-	if(Slot[1][Num] > 0){
+	if(Item[Num] > 0){
 		
-		switch(Slot[0][Num]){
+		switch(Item[Num]){
 		
 			case 0:
 				Line();
 				ColorString(4,"마을로 귀환합니다.\n");
 				Sleep(800);
+				Item[0] -= 1;
+				City();
 				break;
 				
 			case 1:
