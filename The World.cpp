@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<windows.h>
 
-#define Sleep(X); //이 옵션을 사용시 디버그 모드 실행. 모든 지연 제거. 
+//#define Sleep(X); //이 옵션을 사용시 디버그 모드 실행. 모든 지연 제거. 
 
 /*함수 선언부*/
 
@@ -156,16 +156,32 @@ char ItemName[19][50] = {"귀환석\n기절시 마을로 귀환시켜줍니다.",
 
 int Money = 100;//돈 
 
-char MAPINF[2][1000] =
+char MAPINF[10][1000] =
 {
 	{"1층부터 10층의 던전에는 약한 마물들이 살고 있다.\n그 중 1층은 마을과도 연결되어 있는 곳.\저 멀리 슬라임이 보인다.\n"},
-	{"넌 모찌나간다\n"}
+	{"저 멀리 슬라임 덩어리가 보인다.\n"},
+	{"저 멀리 해골 병사가 보인다.\n"},
+	{"저 멀리 스켈레톤이 보인다.\n"},
+	{"저 멀리 썩은 스켈레톤이 보인다.\n"},
+	{"저 멀리 고블린이 보인다.\n"},
+	{"저 멀리 홉 고블린이 보인다.\n"},
+	{"저 멀리 트롤이 보인다.\n"},
+	{"저 멀리 오크가 보인다.\n"},
+	{"보스가 있는 최상층이다.\n저 멀리 골렘이 보인다.\n"}
 	
 };
-char MobName[2][100] = 
+char MobName[10][100] = 
 {
 	{"슬라임"},
-	{"나는 최종보스. 너는 모찌나간다"},
+	{"슬라임 덩어리"},
+	{"해골 병사"},
+	{"스켈레톤"},
+	{"썩은 스켈레톤"},
+	{"고블린"},
+	{"홉 고블린"},
+	{"트롤"},
+	{"오크"},
+	{"골렘"}
 };
 
 int main()//메인함수 
@@ -200,11 +216,67 @@ int City()//마을
 	Mob[0].Speed = 40, Mob[0].Power = 3;//속도, 힘
 	
 	//2층
-	Mob[1].Exp = 0,Mob[1].MaxExp = 0;
-	Mob[1].MaxHp = 10000, Mob[1].Hp = Mob[1].MaxHp, Mob[1].HpGen = 100;//채력 
-	Mob[1].MaxPp = 10000, Mob[1].Pp = Mob[1].MaxPp, Mob[1].PpGen = 100;//마나 
-	Mob[1].Atk = 1000, Mob[1].Def = 1000;//공격력, 방어력 
-	Mob[1].Speed = 100000, Mob[1].Power = 300;//속도, 힘 
+	Mob[1].Exp = 30,Mob[1].MaxExp = 15;
+	Mob[1].MaxHp = 75, Mob[1].Hp = Mob[1].MaxHp, Mob[1].HpGen = 2;//채력 
+	Mob[1].MaxPp = 0, Mob[1].Pp = Mob[1].MaxPp, Mob[1].PpGen = 5;//마나 
+	Mob[1].Atk = 7, Mob[1].Def = 13;//공격력, 방어력 
+	Mob[1].Speed = 100, Mob[1].Power = 10;//속도, 힘 
+	
+	//3층
+	Mob[2].Exp = 150,Mob[2].MaxExp = 100;
+	Mob[2].MaxHp = 350, Mob[2].Hp = Mob[2].MaxHp, Mob[2].HpGen = 5;//채력 
+	Mob[2].MaxPp = 400, Mob[2].Pp = Mob[2].MaxPp, Mob[2].PpGen = 10;//마나 
+	Mob[2].Atk = 25, Mob[2].Def = 40;//공격력, 방어력 
+	Mob[2].Speed = 100, Mob[2].Power = 20;//속도, 힘 
+	
+	//4층
+	Mob[3].Exp = 1500,Mob[3].MaxExp = 700;
+	Mob[3].MaxHp = 2750, Mob[3].Hp = Mob[3].MaxHp, Mob[3].HpGen = 27;//채력 
+	Mob[3].MaxPp = 3000, Mob[3].Pp = Mob[3].MaxPp, Mob[3].PpGen = 46;//마나 
+	Mob[3].Atk = 86, Mob[3].Def = 123;//공격력, 방어력 
+	Mob[3].Speed = 100, Mob[3].Power = 40;//속도, 힘 
+	
+	//5층
+	Mob[4].Exp = 5000,Mob[4].MaxExp = 6000;
+	Mob[4].MaxHp = 10000, Mob[4].Hp = Mob[4].MaxHp, Mob[4].HpGen = 100;//채력 
+	Mob[4].MaxPp = 15000, Mob[4].Pp = Mob[4].MaxPp, Mob[4].PpGen = 150;//마나 
+	Mob[4].Atk = 396, Mob[4].Def = 542;//공격력, 방어력 
+	Mob[4].Speed = 100, Mob[4].Power = 50;//속도, 힘 
+	
+	//6층
+	Mob[5].Exp = 15000,Mob[5].MaxExp = 20000;
+	Mob[5].MaxHp = 50000, Mob[5].Hp = Mob[5].MaxHp, Mob[5].HpGen = 300;//채력 
+	Mob[5].MaxPp = 60000, Mob[5].Pp = Mob[5].MaxPp, Mob[5].PpGen = 350;//마나 
+	Mob[5].Atk = 999, Mob[5].Def = 999;//공격력, 방어력 
+	Mob[5].Speed = 100, Mob[5].Power = 60;//속도, 힘 
+	
+	//7층
+	Mob[6].Exp = 50000,Mob[6].MaxExp = 70000;
+	Mob[6].MaxHp = 100000, Mob[6].Hp = Mob[6].MaxHp, Mob[6].HpGen = 400;//채력 
+	Mob[6].MaxPp = 200000, Mob[6].Pp = Mob[6].MaxPp, Mob[6].PpGen = 500;//마나 
+	Mob[6].Atk = 2999, Mob[6].Def = 1999;//공격력, 방어력 
+	Mob[6].Speed = 100, Mob[6].Power = 70;//속도, 힘 
+	
+	//8층
+	Mob[7].Exp = 100000,Mob[7].MaxExp = 200000;
+	Mob[7].MaxHp = 350000, Mob[7].Hp = Mob[7].MaxHp, Mob[7].HpGen = 800;//채력 
+	Mob[7].MaxPp = 400000, Mob[7].Pp = Mob[7].MaxPp, Mob[7].PpGen = 1000;//마나 
+	Mob[7].Atk = 6999, Mob[7].Def = 9999;//공격력, 방어력 
+	Mob[7].Speed = 100, Mob[7].Power = 80;//속도, 힘 
+	
+	//9층
+	Mob[8].Exp = 200000,Mob[8].MaxExp = 400000;
+	Mob[8].MaxHp = 700000, Mob[8].Hp = Mob[8].MaxHp, Mob[8].HpGen = 1600;//채력 
+	Mob[8].MaxPp = 800000, Mob[8].Pp = Mob[8].MaxPp, Mob[8].PpGen = 2000;//마나 
+	Mob[8].Atk = 9999, Mob[8].Def = 9999;//공격력, 방어력 
+	Mob[8].Speed = 100, Mob[8].Power = 90;//속도, 힘 
+	
+	//10층
+	Mob[9].Exp = 1000000,Mob[9].MaxExp = 1000000;
+	Mob[9].MaxHp = 1000000, Mob[9].Hp = Mob[9].MaxHp, Mob[9].HpGen = 3000;//채력 
+	Mob[9].MaxPp = 1000000, Mob[9].Pp = Mob[9].MaxPp, Mob[9].PpGen = 3000;//마나 
+	Mob[9].Atk = 20000, Mob[9].Def = 30000;//공격력, 방어력 
+	Mob[9].Speed = 100, Mob[9].Power = 100;//속도, 힘 
 	
 	//힐 
 	
