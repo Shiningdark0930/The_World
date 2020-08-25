@@ -22,3 +22,8 @@ cpp 파일은 Dev C++에서 작성되었습니다!
 공유 할때는 반드시 제 깃헙 링크를 올려주시고,
 수정한 파일을 배포할때는 저한테 허가를 맡아 주세요!
 버그고쳐땅
+
+20/8/25 Update Note
+
+Make Use Item System.
+you can use potions on Fight and dungeon.
