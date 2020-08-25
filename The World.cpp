@@ -808,17 +808,20 @@ int SelectItem()
 			
 			printf("%d:%s\n",i+1,ItemName[i]);
 			
-			i += 1;
+			
 			
 		}
+		i += 1;
 		
 	}
 	
 	scanf("%d", &Select);
 	
-	if(Item[Select-1] > 0){
+	Select -= 1;
+	
+	if(Item[Select] > -1){
 		
-		Useitem(Select-1);
+		Useitem(Select);
 		
 	}
 	else{
@@ -833,9 +836,9 @@ int SelectItem()
 int Useitem(int Num)
 {
 
-	if(Item[Num] > 0){
+	if(Item[Num] > -1){
 		
-		switch(Item[Num]){
+		switch(Num){
 		
 			case 0:
 				Line();
@@ -847,6 +850,12 @@ int Useitem(int Num)
 				
 			case 1:
 				Line();
+				
+			default:
+				Line();
+				ColorString(5,"아이템이 존재하지 않거나 갯수가 부족합니다!\n");
+				SelectItem();
+				
 		
 		}
 		
