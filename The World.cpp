@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<windows.h>
 
-//#define Sleep(X); //이 옵션을 사용시 디버그 모드 실행. 모든 지연 제거. 
+#define Sleep(X); //이 옵션을 사용시 디버그 모드 실행. 모든 지연 제거. 
 
 /*함수 선언부*/
 
@@ -48,6 +48,10 @@ int ShowInventory();//인벤토리
 int SelectItem();//아이템선택 
 
 int Useitem(int Num);
+
+int HpPotion(int Hp, int Potion);
+
+int PpPotion(int Pp, int Potion);
 
 int ColorString(int Color,char String[]);//색깔 코드 바꾸기 함수 
 
@@ -129,6 +133,8 @@ struct stat Mob[2];
 19:없음 
 */
 
+int HpPotionHeal[4] = {50,750,5000,30000};
+
 int Item[19] = {5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 int ItemPrize[19] = {10,50,1000,10000,100000,50,1000,10000,100000,50,50,50,70,30,100,70,20,150,0};
@@ -209,74 +215,74 @@ int City()//마을
 	//몹 스텟 초기화 
 	
 	//1층  
-	Mob[0].Exp = 10,Mob[0].MaxExp = 5;
+	Mob[0].Exp = 10,Mob[0].MaxExp = 10;
 	Mob[0].MaxHp = 30, Mob[0].Hp = Mob[0].MaxHp, Mob[0].HpGen = 0;//채력 
-	Mob[0].MaxPp = 10, Mob[0].Pp = Mob[0].MaxPp, Mob[0].PpGen = 1;//마나 
+	Mob[0].MaxPp = 0, Mob[0].Pp = Mob[0].MaxPp, Mob[0].PpGen = 0;//마나 
 	Mob[0].Atk = 3, Mob[0].Def = 0;//공격력, 방어력 
 	Mob[0].Speed = 40, Mob[0].Power = 3;//속도, 힘
 	
 	//2층
-	Mob[1].Exp = 30,Mob[1].MaxExp = 15;
-	Mob[1].MaxHp = 75, Mob[1].Hp = Mob[1].MaxHp, Mob[1].HpGen = 2;//채력 
-	Mob[1].MaxPp = 0, Mob[1].Pp = Mob[1].MaxPp, Mob[1].PpGen = 5;//마나 
-	Mob[1].Atk = 7, Mob[1].Def = 13;//공격력, 방어력 
-	Mob[1].Speed = 100, Mob[1].Power = 10;//속도, 힘 
+	Mob[1].Exp = 40,Mob[1].MaxExp = 40;
+	Mob[1].MaxHp = 40, Mob[1].Hp = Mob[1].MaxHp, Mob[1].HpGen = 0;//채력 
+	Mob[1].MaxPp = 0, Mob[1].Pp = Mob[1].MaxPp, Mob[1].PpGen = 0;//마나 
+	Mob[1].Atk = 4, Mob[1].Def = 0;//공격력, 방어력 
+	Mob[1].Speed = 100, Mob[1].Power = 6;//속도, 힘 
 	
 	//3층
-	Mob[2].Exp = 150,Mob[2].MaxExp = 100;
-	Mob[2].MaxHp = 350, Mob[2].Hp = Mob[2].MaxHp, Mob[2].HpGen = 5;//채력 
-	Mob[2].MaxPp = 400, Mob[2].Pp = Mob[2].MaxPp, Mob[2].PpGen = 10;//마나 
-	Mob[2].Atk = 25, Mob[2].Def = 40;//공격력, 방어력 
-	Mob[2].Speed = 100, Mob[2].Power = 20;//속도, 힘 
+	Mob[2].Exp = 90,Mob[2].MaxExp = 90;
+	Mob[2].MaxHp = 60, Mob[2].Hp = Mob[2].MaxHp, Mob[2].HpGen = 0;//채력 
+	Mob[2].MaxPp = 0, Mob[2].Pp = Mob[2].MaxPp, Mob[2].PpGen = 0;//마나 
+	Mob[2].Atk = 6, Mob[2].Def = 0;//공격력, 방어력 
+	Mob[2].Speed = 100, Mob[2].Power = 9;//속도, 힘 
 	
 	//4층
-	Mob[3].Exp = 1500,Mob[3].MaxExp = 700;
-	Mob[3].MaxHp = 2750, Mob[3].Hp = Mob[3].MaxHp, Mob[3].HpGen = 27;//채력 
-	Mob[3].MaxPp = 3000, Mob[3].Pp = Mob[3].MaxPp, Mob[3].PpGen = 46;//마나 
-	Mob[3].Atk = 86, Mob[3].Def = 123;//공격력, 방어력 
-	Mob[3].Speed = 100, Mob[3].Power = 40;//속도, 힘 
+	Mob[3].Exp = 160,Mob[3].MaxExp = 160;
+	Mob[3].MaxHp = 90, Mob[3].Hp = Mob[3].MaxHp, Mob[3].HpGen = 1;//채력 
+	Mob[3].MaxPp = 0, Mob[3].Pp = Mob[3].MaxPp, Mob[3].PpGen = 0;//마나 
+	Mob[3].Atk = 9, Mob[3].Def = 0;//공격력, 방어력 
+	Mob[3].Speed = 100, Mob[3].Power = 12;//속도, 힘 
 	
 	//5층
-	Mob[4].Exp = 5000,Mob[4].MaxExp = 6000;
-	Mob[4].MaxHp = 10000, Mob[4].Hp = Mob[4].MaxHp, Mob[4].HpGen = 100;//채력 
-	Mob[4].MaxPp = 15000, Mob[4].Pp = Mob[4].MaxPp, Mob[4].PpGen = 150;//마나 
-	Mob[4].Atk = 396, Mob[4].Def = 542;//공격력, 방어력 
-	Mob[4].Speed = 100, Mob[4].Power = 50;//속도, 힘 
+	Mob[4].Exp = 250,Mob[4].MaxExp = 250;
+	Mob[4].MaxHp = 150, Mob[4].Hp = Mob[4].MaxHp, Mob[4].HpGen = 1;//채력 
+	Mob[4].MaxPp = 0, Mob[4].Pp = Mob[4].MaxPp, Mob[4].PpGen = 0;//마나 
+	Mob[4].Atk = 13, Mob[4].Def = 0;//공격력, 방어력 
+	Mob[4].Speed = 100, Mob[4].Power = 15;//속도, 힘 
 	
 	//6층
-	Mob[5].Exp = 15000,Mob[5].MaxExp = 20000;
-	Mob[5].MaxHp = 50000, Mob[5].Hp = Mob[5].MaxHp, Mob[5].HpGen = 300;//채력 
-	Mob[5].MaxPp = 60000, Mob[5].Pp = Mob[5].MaxPp, Mob[5].PpGen = 350;//마나 
-	Mob[5].Atk = 999, Mob[5].Def = 999;//공격력, 방어력 
-	Mob[5].Speed = 100, Mob[5].Power = 60;//속도, 힘 
+	Mob[5].Exp = 360,Mob[5].MaxExp = 360;
+	Mob[5].MaxHp = 230, Mob[5].Hp = Mob[5].MaxHp, Mob[5].HpGen = 2;//채력 
+	Mob[5].MaxPp = 0, Mob[5].Pp = Mob[5].MaxPp, Mob[5].PpGen = 0;//마나 
+	Mob[5].Atk = 18, Mob[5].Def = 2;//공격력, 방어력 
+	Mob[5].Speed = 100, Mob[5].Power = 18;//속도, 힘 
 	
 	//7층
-	Mob[6].Exp = 50000,Mob[6].MaxExp = 70000;
-	Mob[6].MaxHp = 100000, Mob[6].Hp = Mob[6].MaxHp, Mob[6].HpGen = 400;//채력 
-	Mob[6].MaxPp = 200000, Mob[6].Pp = Mob[6].MaxPp, Mob[6].PpGen = 500;//마나 
-	Mob[6].Atk = 2999, Mob[6].Def = 1999;//공격력, 방어력 
-	Mob[6].Speed = 100, Mob[6].Power = 70;//속도, 힘 
+	Mob[6].Exp = 490,Mob[6].MaxExp = 490;
+	Mob[6].MaxHp = 480, Mob[6].Hp = Mob[6].MaxHp, Mob[6].HpGen = 4;//채력 
+	Mob[6].MaxPp = 0, Mob[6].Pp = Mob[6].MaxPp, Mob[6].PpGen = 0;//마나 
+	Mob[6].Atk = 24, Mob[6].Def = 3;//공격력, 방어력 
+	Mob[6].Speed = 100, Mob[6].Power = 21;//속도, 힘 
 	
 	//8층
-	Mob[7].Exp = 100000,Mob[7].MaxExp = 200000;
-	Mob[7].MaxHp = 350000, Mob[7].Hp = Mob[7].MaxHp, Mob[7].HpGen = 800;//채력 
-	Mob[7].MaxPp = 400000, Mob[7].Pp = Mob[7].MaxPp, Mob[7].PpGen = 1000;//마나 
-	Mob[7].Atk = 6999, Mob[7].Def = 9999;//공격력, 방어력 
-	Mob[7].Speed = 100, Mob[7].Power = 80;//속도, 힘 
+	Mob[7].Exp = 640,Mob[7].MaxExp = 640;
+	Mob[7].MaxHp = 750, Mob[7].Hp = Mob[7].MaxHp, Mob[7].HpGen = 7;//채력 
+	Mob[7].MaxPp = 0, Mob[7].Pp = Mob[7].MaxPp, Mob[7].PpGen = 0;//마나 
+	Mob[7].Atk = 31, Mob[7].Def = 4;//공격력, 방어력 
+	Mob[7].Speed = 100, Mob[7].Power = 24;//속도, 힘 
 	
 	//9층
-	Mob[8].Exp = 200000,Mob[8].MaxExp = 400000;
-	Mob[8].MaxHp = 700000, Mob[8].Hp = Mob[8].MaxHp, Mob[8].HpGen = 1600;//채력 
-	Mob[8].MaxPp = 800000, Mob[8].Pp = Mob[8].MaxPp, Mob[8].PpGen = 2000;//마나 
-	Mob[8].Atk = 9999, Mob[8].Def = 9999;//공격력, 방어력 
-	Mob[8].Speed = 100, Mob[8].Power = 90;//속도, 힘 
+	Mob[8].Exp = 810,Mob[8].MaxExp = 810;
+	Mob[8].MaxHp = 1000, Mob[8].Hp = Mob[8].MaxHp, Mob[8].HpGen = 10;//채력 
+	Mob[8].MaxPp = 0, Mob[8].Pp = Mob[8].MaxPp, Mob[8].PpGen = 0;//마나 
+	Mob[8].Atk = 39, Mob[8].Def = 5;//공격력, 방어력 
+	Mob[8].Speed = 100, Mob[8].Power = 27;//속도, 힘 
 	
 	//10층
-	Mob[9].Exp = 1000000,Mob[9].MaxExp = 1000000;
-	Mob[9].MaxHp = 1000000, Mob[9].Hp = Mob[9].MaxHp, Mob[9].HpGen = 3000;//채력 
-	Mob[9].MaxPp = 1000000, Mob[9].Pp = Mob[9].MaxPp, Mob[9].PpGen = 3000;//마나 
-	Mob[9].Atk = 20000, Mob[9].Def = 30000;//공격력, 방어력 
-	Mob[9].Speed = 100, Mob[9].Power = 100;//속도, 힘 
+	Mob[9].Exp = 2000,Mob[9].MaxExp = 2000;
+	Mob[9].MaxHp = 5000, Mob[9].Hp = Mob[9].MaxHp, Mob[9].HpGen = 50;//채력 
+	Mob[9].MaxPp = 10, Mob[9].Pp = Mob[9].MaxPp, Mob[9].PpGen = 0;//마나 
+	Mob[9].Atk = 50, Mob[9].Def = 10;//공격력, 방어력 
+	Mob[9].Speed = 100, Mob[9].Power = 50;//속도, 힘 
 	
 	//힐 
 	
@@ -383,7 +389,7 @@ int Dungeon_Main(int Grade)//던전 선택창
 	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]\n");
 	ColorString(7,"1:전투\n");
 	ColorString(7,"2:스탯 확인\n");
-	//ColorString(7,"3:인벤토리\n");
+	ColorString(7,"3:정비\n");
 	
 	scanf("%d", &Select);
 	
@@ -399,8 +405,11 @@ int Dungeon_Main(int Grade)//던전 선택창
 			Dungeon_Main(Grade);
 			break;
 			
-		//case 3:
-			//break;
+		case 3:
+			ShowArmor();
+			ShowInventory();
+			SelectItem();
+			break;
 			
 		default:
 			goto A1; //A1
@@ -432,7 +441,7 @@ int Dungeon_Fight(int Grade)//전투
 	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]\n");
 	ColorString(7,"1:공격\n");
 	//ColorString(7,"2:방어\n");
-	//ColorString(7,"3:아이템 사용\n");
+	ColorString(7,"3:아이템 사용\n");
 	//ColorString(7,"4:스킬\n");
 	
 	scanf("%d", &Select);
@@ -442,6 +451,11 @@ int Dungeon_Fight(int Grade)//전투
 		
 		case 1:
 			Fight_Attek(Grade);
+			break;
+			
+		case 3:
+			ShowInventory();
+			SelectItem();
 			break;
 			
 		default:
@@ -619,7 +633,8 @@ int Shop()//상점
 	F1:
 	
 	Line();
-	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]\n");
+	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]");
+	printf("소지금 %dG\n",Money);
 	ColorString(7,"1:소모품\n");
 	//ColorString(7,"2:장비\n");
 	//ColorString(7,"3:판매\n");
@@ -665,7 +680,8 @@ int ShopExpend()//소모품
 	G1:
 	
 	Line();
-	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]\n");
+	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]");
+	printf("소지금 %dG\n",Money);
 	ColorString(7,"1:물약\n");
 	ColorString(7,"2:[10골드]귀환석\n");
 	ColorString(7,"3:탈주\n");
@@ -707,7 +723,8 @@ int ShopPotion()//물약
 	H1:
 	
 	Line();
-	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]\n");
+	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]");
+	printf("소지금 %dG\n",Money);
 	ColorString(7,"1:[50골드]채력 물약(소)[Hp 50 회복]\n");
 	ColorString(7,"2:[1,000골드]채력 물약(중)[Hp 750 회복]\n");
 	ColorString(7,"3:[10,000골드]채력 물약(대)[Hp 5,000 회복]\n");
@@ -777,7 +794,7 @@ int LevelUp()//레벨업
 int BuyItem(int ItemNum)//아이템 구매 
 {
 	
-	if(Money > ItemPrize[ItemNum]){
+	if(Money > ItemPrize[ItemNum]-1){
 		
 		Item[ItemNum] += 1;
 		Money -= ItemPrize[ItemNum];
@@ -878,7 +895,7 @@ int SelectItem()
 			
 			ColorString(15,"");
 			
-			printf("%d:%s\n",i+1,ItemName[i]);
+			printf("%d:%s[%d개]\n",i+1,ItemName[i],Item[i]);
 			
 			
 			
@@ -910,6 +927,12 @@ int Useitem(int Num)
 
 	if(Item[Num] > -1){
 		
+		if(Num > 0 && Num<5)
+			HpPotion(HpPotionHeal[Num-1],Num-1);
+			
+		if(Num > 4 && Num<9)
+			PpPotion(HpPotionHeal[Num-1],Num-1);
+		
 		switch(Num){
 		
 			case 0:
@@ -921,7 +944,28 @@ int Useitem(int Num)
 				break;
 				
 			case 1:
-				Line();
+				break;
+			
+			case 2:
+				break;
+			
+			case 3:
+				break;
+			
+			case 4:
+				break;
+			
+			case 5:
+				break;
+			
+			case 6:
+				break;
+			
+			case 7:
+				break;
+			
+			case 8:
+				break;	
 				
 			default:
 				Line();
@@ -932,6 +976,36 @@ int Useitem(int Num)
 		}
 		
 	}
+	
+}
+
+int HpPotion(int Hp, int Potion)
+{
+	
+	Line();
+	ColorString(1,"체력 물약을 사용하였습니다!\n");
+	Sleep(800);
+	
+	p.Hp += Hp;
+	if(p.Hp > p.MaxHp)
+		p.Hp = p.MaxHp;
+	
+	Item[Potion+1] -= 1;
+	
+}
+
+int PpPotion(int Pp, int Potion)
+{
+	
+	Line();
+	ColorString(1,"마나 물약을 사용하였습니다!\n");
+	Sleep(800);
+	
+	p.Pp += Pp;
+	if(p.Pp > p.MaxPp)
+		p.Pp = p.MaxPp;
+	
+	Item[Potion+1] -= 1;
 	
 }
 
