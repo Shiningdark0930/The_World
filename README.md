@@ -61,3 +61,11 @@ Added More Mobs.
 beta 0.13(20/8/25)
 
 If you faint, Your Exp Set 0, And Your MaxExp 2X.
+
+beta 0.14(20/8/26)
+
+-Add Mob Adder
+
+-Add More Mobs
+
+-ReNual 1~10 Grade Mobs
