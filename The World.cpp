@@ -3,6 +3,17 @@
 
 #define Sleep(X); //이 옵션을 사용시 디버그 모드 실행. 모든 지연 제거. 
 
+/*
+몹을 추가하고 싶을 때
+MapInf,MobName 변수를 찾아주세요.
+그러고 층의 설명과 몹 이름을 바뀌주세요.
+마지막으로, 맨 밑에 SetMobStat라는 함수가 있습니다.
+그곳으 SetMobStatGrade 함수를 추가해 몹의 스탯을 설정해주세요.
+몹의 스텟 설정은, 상단의 함수 선언부에 있는
+SetMobStatGrade 함수 밑에 설명이 나와있습니다.
+그러고 Mob 구조체 배열의 배열양도 늘려주세요. 
+*/ 
+
 /*함수 선언부*/
 
 
@@ -52,6 +63,12 @@ int Useitem(int Num);
 int HpPotion(int Hp, int Potion);
 
 int PpPotion(int Pp, int Potion);
+
+int SetMobStat();//몹 스텟 초기화
+
+int SetMobStatGrade(int Grade,int Exp,int Gold, int MaxHp, int HpGen, int MaxPp, int PpGen, int Atk, int Def, int Speed, int Power);//몹 스텟 초기화 옵션 
+
+//순서대로 몹 출현 층,주는 경험치,주는 골드, 채력,턴마다 리젠되는 채력,마나,턴마다 리젠되는 마나,공격력,방어력,속도,힘 입니다. 
 
 int ColorString(int Color,char String[]);//색깔 코드 바꾸기 함수 
 
@@ -121,7 +138,7 @@ struct stat
 
 struct stat p;
 
-struct stat Mob[2];
+struct stat Mob[20];//이것도 늘려주세요. 
 
 //아이템 
 
@@ -162,32 +179,52 @@ char ItemName[19][50] = {"귀환석\n기절시 마을로 귀환시켜줍니다.",
 
 int Money = 100;//돈 
 
-char MAPINF[10][1000] =
+char MAPINF[20][1000] =
 {
-	{"1층부터 10층의 던전에는 약한 마물들이 살고 있다.\n그 중 1층은 마을과도 연결되어 있는 곳.\저 멀리 슬라임이 보인다.\n"},
-	{"저 멀리 슬라임 덩어리가 보인다.\n"},
-	{"저 멀리 해골 병사가 보인다.\n"},
-	{"저 멀리 스켈레톤이 보인다.\n"},
-	{"저 멀리 썩은 스켈레톤이 보인다.\n"},
-	{"저 멀리 고블린이 보인다.\n"},
-	{"저 멀리 홉 고블린이 보인다.\n"},
-	{"저 멀리 트롤이 보인다.\n"},
-	{"저 멀리 오크가 보인다.\n"},
-	{"보스가 있는 최상층이다.\n저 멀리 골렘이 보인다.\n"}
+	{"1층부터 10층의 던전에는 약한 마물들이 살고 있다.\n그 중 1층은 마을과도 연결되어 있는 곳.\n저 멀리 슬라임이 보인다.\n"},
+	{"저 멀리 워터 슬라임이 보인다.\n"},
+	{"저 멀리 파이어 슬라임이 보인다.\n"},
+	{"저 멀리 포이즌 슬라임이 보인다.\n"},
+	{"저 멀리 일렉트릭 슬라임이 보인다.\n"},
+	{"저 멀리 아이스 슬라임이 보인다.\n"},
+	{"저 멀리 스톤 슬라임이 보인다.\n"},
+	{"저 멀리 에너지 슬라임이 보인다.\n"},
+	{"저 멀리 엘리트 슬라임이 보인다.\n"},
+	{"보스가 있는 최상층이다.\n저 멀리 슬라임 킹이 보인다.\n"},
+	{"2층부터 20층의 던전에는 초보자가 잡을 수 없는 마물들이 살고 있다.\n저 멀리 스켈레톤이 보인다.\n"},
+	{"저 멀리 스켈레톤 병사가 보인다.\n"},
+	{"저 멀리 올드 스켈레톤이 보인다.\n"},
+	{"저 멀리 올드 스켈레톤 병사가 보인다.\n"},
+	{"저 멀리 스켈레톤 아처가 보인다.\n"},
+	{"저 멀리 언데드 스켈레톤이 보인다.\n"},
+	{"저 멀리 스켈레톤 군주가 보인다.\n"},
+	{"저 멀리 언데드 스켈레톤 군주가 보인다.\n"},
+	{"저 멀리 The Skeleton이 보인다.\n"},
+	{"보스가 있는 최상층이다.\n저 멀리 스켈레톤 킹이 보인다.\n"}
 	
 };
-char MobName[10][100] = 
+char MobName[20][100] = 
 {
 	{"슬라임"},
-	{"슬라임 덩어리"},
-	{"해골 병사"},
+	{"워터 슬라임"},
+	{"파이어 슬라임"},
+	{"포이즌 슬라임"},
+	{"일렉트릭 슬라임"},
+	{"아이스 슬라임"},
+	{"스톤 슬라임"},
+	{"에너지 슬라임"},
+	{"엘리트 슬라임"},
+	{"슬라임 킹"},
 	{"스켈레톤"},
-	{"썩은 스켈레톤"},
-	{"고블린"},
-	{"홉 고블린"},
-	{"트롤"},
-	{"오크"},
-	{"골렘"}
+	{"스켈레톤 병사"},
+	{"올드 스켈레톤"},
+	{"고대 스켈레톤 병사"},
+	{"스켈레톤 아처"},
+	{"언데드 스켈레톤"},
+	{"스켈레톤 군주"},
+	{"언데드 스켈레톤 군주"},
+	{"The Skeleton"},
+	{"스켈레톤 킹"},
 };
 
 int main()//메인함수 
@@ -212,77 +249,7 @@ int main()//메인함수
 int City()//마을 
 {
 	
-	//몹 스텟 초기화 
-	
-	//1층  
-	Mob[0].Exp = 10,Mob[0].MaxExp = 10;
-	Mob[0].MaxHp = 30, Mob[0].Hp = Mob[0].MaxHp, Mob[0].HpGen = 0;//채력 
-	Mob[0].MaxPp = 0, Mob[0].Pp = Mob[0].MaxPp, Mob[0].PpGen = 0;//마나 
-	Mob[0].Atk = 3, Mob[0].Def = 0;//공격력, 방어력 
-	Mob[0].Speed = 40, Mob[0].Power = 3;//속도, 힘
-	
-	//2층
-	Mob[1].Exp = 20,Mob[1].MaxExp = 20;
-	Mob[1].MaxHp = 40, Mob[1].Hp = Mob[1].MaxHp, Mob[1].HpGen = 0;//채력 
-	Mob[1].MaxPp = 0, Mob[1].Pp = Mob[1].MaxPp, Mob[1].PpGen = 0;//마나 
-	Mob[1].Atk = 4, Mob[1].Def = 0;//공격력, 방어력 
-	Mob[1].Speed = 100, Mob[1].Power = 6;//속도, 힘 
-	
-	//3층
-	Mob[2].Exp = 40,Mob[2].MaxExp = 40;
-	Mob[2].MaxHp = 60, Mob[2].Hp = Mob[2].MaxHp, Mob[2].HpGen = 0;//채력 
-	Mob[2].MaxPp = 0, Mob[2].Pp = Mob[2].MaxPp, Mob[2].PpGen = 0;//마나 
-	Mob[2].Atk = 6, Mob[2].Def = 0;//공격력, 방어력 
-	Mob[2].Speed = 100, Mob[2].Power = 9;//속도, 힘 
-	
-	//4층
-	Mob[3].Exp = 70,Mob[3].MaxExp = 70;
-	Mob[3].MaxHp = 90, Mob[3].Hp = Mob[3].MaxHp, Mob[3].HpGen = 1;//채력 
-	Mob[3].MaxPp = 0, Mob[3].Pp = Mob[3].MaxPp, Mob[3].PpGen = 0;//마나 
-	Mob[3].Atk = 9, Mob[3].Def = 0;//공격력, 방어력 
-	Mob[3].Speed = 100, Mob[3].Power = 12;//속도, 힘 
-	
-	//5층
-	Mob[4].Exp = 110,Mob[4].MaxExp = 120;
-	Mob[4].MaxHp = 150, Mob[4].Hp = Mob[4].MaxHp, Mob[4].HpGen = 1;//채력 
-	Mob[4].MaxPp = 0, Mob[4].Pp = Mob[4].MaxPp, Mob[4].PpGen = 0;//마나 
-	Mob[4].Atk = 13, Mob[4].Def = 0;//공격력, 방어력 
-	Mob[4].Speed = 100, Mob[4].Power = 15;//속도, 힘 
-	
-	//6층
-	Mob[5].Exp = 160,Mob[5].MaxExp = 190;
-	Mob[5].MaxHp = 230, Mob[5].Hp = Mob[5].MaxHp, Mob[5].HpGen = 2;//채력 
-	Mob[5].MaxPp = 0, Mob[5].Pp = Mob[5].MaxPp, Mob[5].PpGen = 0;//마나 
-	Mob[5].Atk = 18, Mob[5].Def = 2;//공격력, 방어력 
-	Mob[5].Speed = 100, Mob[5].Power = 18;//속도, 힘 
-	
-	//7층
-	Mob[6].Exp = 220,Mob[6].MaxExp = 280;
-	Mob[6].MaxHp = 480, Mob[6].Hp = Mob[6].MaxHp, Mob[6].HpGen = 4;//채력 
-	Mob[6].MaxPp = 0, Mob[6].Pp = Mob[6].MaxPp, Mob[6].PpGen = 0;//마나 
-	Mob[6].Atk = 24, Mob[6].Def = 3;//공격력, 방어력 
-	Mob[6].Speed = 100, Mob[6].Power = 21;//속도, 힘 
-	
-	//8층
-	Mob[7].Exp = 290,Mob[7].MaxExp = 450;
-	Mob[7].MaxHp = 750, Mob[7].Hp = Mob[7].MaxHp, Mob[7].HpGen = 7;//채력 
-	Mob[7].MaxPp = 0, Mob[7].Pp = Mob[7].MaxPp, Mob[7].PpGen = 0;//마나 
-	Mob[7].Atk = 31, Mob[7].Def = 4;//공격력, 방어력 
-	Mob[7].Speed = 100, Mob[7].Power = 24;//속도, 힘 
-	
-	//9층
-	Mob[8].Exp = 370,Mob[8].MaxExp = 600;
-	Mob[8].MaxHp = 1000, Mob[8].Hp = Mob[8].MaxHp, Mob[8].HpGen = 10;//채력 
-	Mob[8].MaxPp = 0, Mob[8].Pp = Mob[8].MaxPp, Mob[8].PpGen = 0;//마나 
-	Mob[8].Atk = 39, Mob[8].Def = 5;//공격력, 방어력 
-	Mob[8].Speed = 100, Mob[8].Power = 27;//속도, 힘 
-	
-	//10층
-	Mob[9].Exp = 1500,Mob[9].MaxExp = 2000;
-	Mob[9].MaxHp = 5000, Mob[9].Hp = Mob[9].MaxHp, Mob[9].HpGen = 50;//채력 
-	Mob[9].MaxPp = 10, Mob[9].Pp = Mob[9].MaxPp, Mob[9].PpGen = 0;//마나 
-	Mob[9].Atk = 50, Mob[9].Def = 10;//공격력, 방어력 
-	Mob[9].Speed = 100, Mob[9].Power = 50;//속도, 힘 
+	SetMobStat();
 	
 	//힐 
 	
@@ -913,7 +880,7 @@ int SelectItem()
 	
 	Select -= 1;
 	
-	if(Item[Select] > -1){
+	if(Item[Select] > 0){
 		
 		Useitem(Select);
 		
@@ -1023,6 +990,43 @@ int ColorString(int Color,char String[])//색깔 택스트 출력
 		
 	return 0;
 		
+}
+
+int SetMobStat()//몹 스텟 초기화 
+{
+	
+	SetMobStatGrade(0,10,10,30,0,0,0,3,0,40,3);
+	SetMobStatGrade(1,20,20,40,0,0,0,4,0,100,6);
+	SetMobStatGrade(2,40,40,60,0,0,0,6,0,100,9);
+	SetMobStatGrade(3,70,70,90,1,0,0,9,0,100,12);
+	SetMobStatGrade(4,110,120,150,1,0,0,13,1,100,15);
+	SetMobStatGrade(5,160,190,230,2,0,0,18,2,100,18);
+	SetMobStatGrade(6,220,280,480,4,0,0,24,3,100,21);
+	SetMobStatGrade(7,290,450,750,7,0,0,31,4,100,24);
+	SetMobStatGrade(8,370,600,1000,10,0,0,39,5,100,27);
+	SetMobStatGrade(9,1500,2000,5000,50,10,0,50,10,100,50);
+	SetMobStatGrade(10,500,800,2000,20,10,1,100,20,100,60);
+	SetMobStatGrade(11,1000,1700,3000,30,20,2,200,35,100,70);
+	SetMobStatGrade(12,1500,2600,5000,50,30,3,300,70,100,80);
+	SetMobStatGrade(13,2000,3500,8500,85,40,4,450,120,100,90);
+	SetMobStatGrade(14,2500,4700,10000,200,50,5,700,200,100,100);
+	SetMobStatGrade(15,3000,6000,17500,175,60,6,1350,300,100,110);
+	SetMobStatGrade(16,4000,8000,25000,250,70,7,1750,450,100,120);
+	SetMobStatGrade(17,5000,10500,40000,400,80,8,2500,1000,100,130);
+	SetMobStatGrade(18,7000,14500,100000,1000,90,9,4000,1500,100,140);
+	SetMobStatGrade(19,20000,25000,250000,2500,200,10,10000,3000,100,200);
+    
+}
+
+int SetMobStatGrade(int Grade,int Exp,int Gold, int MaxHp, int HpGen, int MaxPp, int PpGen, int Atk, int Def, int Speed, int Power)
+{
+	
+	Mob[Grade].Exp = Exp,Mob[Grade].MaxExp = Gold;
+	Mob[Grade].MaxHp = MaxHp, Mob[Grade].Hp = Mob[Grade].MaxHp, Mob[Grade].HpGen = HpGen;//채력 
+	Mob[Grade].MaxPp = MaxPp, Mob[Grade].Pp = Mob[Grade].MaxPp, Mob[Grade].PpGen = PpGen;//마나 
+	Mob[Grade].Atk = Atk, Mob[Grade].Def = Def;//공격력, 방어력 
+	Mob[Grade].Speed = Speed, Mob[Grade].Power = Power;//속도, 힘 
+	
 }
 /*베타 0.1
 기본 프로그램 구현
