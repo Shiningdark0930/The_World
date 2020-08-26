@@ -66,6 +66,8 @@ int PpPotion(int Pp, int Potion);
 
 int SetMobStat();//몹 스텟 초기화
 
+int MobReganTick(int Grade);
+
 int SetMobStatGrade(int Grade,int Exp,int Gold, int MaxHp, int HpGen, int MaxPp, int PpGen, int Atk, int Def, int Speed, int Power);//몹 스텟 초기화 옵션 
 
 //순서대로 몹 출현 층,주는 경험치,주는 골드, 채력,턴마다 리젠되는 채력,마나,턴마다 리젠되는 마나,공격력,방어력,속도,힘 입니다. 
@@ -138,7 +140,7 @@ struct stat
 
 struct stat p;
 
-struct stat Mob[20];//이것도 늘려주세요. 
+struct stat Mob[21];//이것도 늘려주세요. 
 
 //아이템 
 
@@ -179,7 +181,7 @@ char ItemName[19][50] = {"귀환석\n기절시 마을로 귀환시켜줍니다.",
 
 int Money = 100;//돈 
 
-char MAPINF[20][1000] =
+char MAPINF[21][1000] =
 {
 	{"1층부터 10층의 던전에는 약한 마물들이 살고 있다.\n그 중 1층은 마을과도 연결되어 있는 곳.\n저 멀리 슬라임이 보인다.\n"},
 	{"저 멀리 워터 슬라임이 보인다.\n"},
@@ -200,10 +202,11 @@ char MAPINF[20][1000] =
 	{"저 멀리 스켈레톤 군주가 보인다.\n"},
 	{"저 멀리 언데드 스켈레톤 군주가 보인다.\n"},
 	{"저 멀리 The Skeleton이 보인다.\n"},
-	{"보스가 있는 최상층이다.\n저 멀리 스켈레톤 킹이 보인다.\n"}
+	{"보스가 있는 최상층이다.\n저 멀리 스켈레톤 킹이 보인다.\n"},
+	{"최종 보스가 있는 곳이다.\n저 멀리 코끼리 똥구멍이 보인다.\n"}
 	
 };
-char MobName[20][100] = 
+char MobName[21][100] = 
 {
 	{"슬라임"},
 	{"워터 슬라임"},
@@ -225,6 +228,7 @@ char MobName[20][100] =
 	{"언데드 스켈레톤 군주"},
 	{"The Skeleton"},
 	{"스켈레톤 킹"},
+	{"[최종보스]코끼리 똥구멍"},
 };
 
 int main()//메인함수 
@@ -233,10 +237,10 @@ int main()//메인함수
 	/*-----변수 초기화-----*/
 	
 	//플레이어 스텟	
-	p.Lv = 1, p.Exp = 0, p.MaxExp = 10;//레벨 
+	p.Lv = 1, p.Exp = 0, p.MaxExp = 100;//레벨 
 	p.MaxHp = 100, p.Hp = p.MaxHp, p.HpGen = 0;//채력 
 	p.MaxPp = 50, p.Pp = p.MaxPp, p.PpGen = 1;//마나 
-	p.Atk = 5, p.Def = 0;//공격력, 방어력 
+	p.Atk = 5, p.Def = 0;//공격력, 방어력
 	p.Speed = 100, p.Power = 10;//속도, 힘 
 
 	//플래이어 분배스텟
@@ -432,6 +436,8 @@ int Dungeon_Fight(int Grade)//전투
 	}
 	
 	CheckMobDied(Grade);
+	
+	MobReganTick(Grade);
 	
 	MobAttek(Grade);
 	
@@ -747,13 +753,13 @@ int LevelUp()//레벨업
 	
 	p.Lv += 1; 
 	p.Exp -= p.MaxExp;
-	p.Hp = p.MaxHp;
-	p.Pp = p.MaxPp;
-	p.MaxExp *= 1.1;
 	p.MaxHp *= 1.04;
 	p.MaxPp *= 1.041;
-	p.HpGen += p.Lv/5;
-	p.PpGen += p.Lv/3;
+	p.Hp = p.MaxHp;
+	p.Pp = p.MaxPp;
+	p.MaxExp *= 1.043;
+	p.HpGen = p.Hp*0.01;
+	p.PpGen = p.Pp*0.02;
 	p.Atk += p.Lv/10;
 	p.Def += p.Lv/35;
 	p.Speed += p.Lv/100;
@@ -995,27 +1001,47 @@ int ColorString(int Color,char String[])//색깔 택스트 출력
 int SetMobStat()//몹 스텟 초기화 
 {
 	
-	SetMobStatGrade(0,10,10,30,0,0,0,3,0,40,3);
-	SetMobStatGrade(1,20,20,40,0,0,0,4,0,100,6);
-	SetMobStatGrade(2,40,40,60,0,0,0,6,0,100,9);
-	SetMobStatGrade(3,70,70,90,1,0,0,9,0,100,12);
-	SetMobStatGrade(4,110,120,150,1,0,0,13,1,100,15);
-	SetMobStatGrade(5,160,190,230,2,0,0,18,2,100,18);
-	SetMobStatGrade(6,220,280,480,4,0,0,24,3,100,21);
-	SetMobStatGrade(7,290,450,750,7,0,0,31,4,100,24);
-	SetMobStatGrade(8,370,600,1000,10,0,0,39,5,100,27);
-	SetMobStatGrade(9,1500,2000,5000,50,10,0,50,10,100,50);
-	SetMobStatGrade(10,500,800,2000,20,10,1,100,20,100,60);
-	SetMobStatGrade(11,1000,1700,3000,30,20,2,200,35,100,70);
-	SetMobStatGrade(12,1500,2600,5000,50,30,3,300,70,100,80);
-	SetMobStatGrade(13,2000,3500,8500,85,40,4,450,120,100,90);
-	SetMobStatGrade(14,2500,4700,10000,200,50,5,700,200,100,100);
-	SetMobStatGrade(15,3000,6000,17500,175,60,6,1350,300,100,110);
-	SetMobStatGrade(16,4000,8000,25000,250,70,7,1750,450,100,120);
-	SetMobStatGrade(17,5000,10500,40000,400,80,8,2500,1000,100,130);
-	SetMobStatGrade(18,7000,14500,100000,1000,90,9,4000,1500,100,140);
-	SetMobStatGrade(19,20000,25000,250000,2500,200,10,10000,3000,100,200);
+	SetMobStatGrade(0,100,10,30,0,0,0,3,0,40,3);
+	SetMobStatGrade(1,200,20,40,0,0,0,4,0,100,6);
+	SetMobStatGrade(2,400,40,60,0,0,0,6,0,100,9);
+	SetMobStatGrade(3,700,70,90,1,0,0,9,0,100,12);
+	SetMobStatGrade(4,1100,120,150,1,0,0,13,1,100,15);
+	SetMobStatGrade(5,1600,190,230,2,0,0,18,2,100,18);
+	SetMobStatGrade(6,2200,280,480,4,0,0,24,3,100,21);
+	SetMobStatGrade(7,2900,450,750,7,0,0,31,4,100,24);
+	SetMobStatGrade(8,3700,600,1000,10,0,0,39,5,100,27);
+	SetMobStatGrade(9,15000,2000,5000,50,10,0,50,10,100,50);
+	SetMobStatGrade(10,5000,800,2000,20,10,1,100,20,100,60);
+	SetMobStatGrade(11,10000,1700,3000,30,20,2,200,35,100,70);
+	SetMobStatGrade(12,15000,2600,5000,50,30,3,300,70,100,80);
+	SetMobStatGrade(13,20000,3500,8500,85,40,4,450,120,100,90);
+	SetMobStatGrade(14,25000,4700,10000,200,50,5,700,200,100,100);
+	SetMobStatGrade(15,30000,6000,17500,175,60,6,1350,300,100,110);
+	SetMobStatGrade(16,40000,8000,25000,250,70,7,1750,450,100,120);
+	SetMobStatGrade(17,50000,10500,40000,400,80,8,2500,1000,100,130);
+	SetMobStatGrade(18,70000,14500,100000,1000,90,9,4000,1500,100,140);
+	SetMobStatGrade(19,200000,25000,250000,2500,200,10,10000,3000,100,200);
+	SetMobStatGrade(20,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100);
     
+}
+
+int MobReganTick(int Grade)
+{
+	
+	Mob[Grade].Hp += Mob[Grade].HpGen;
+	Mob[Grade].Pp += Mob[Grade].PpGen;
+	
+	if(Mob[Grade].Hp > Mob[Grade].MaxHp){
+		
+		Mob[Grade].Hp = Mob[Grade].MaxHp;
+		
+	}
+	if(Mob[Grade].Pp > Mob[Grade].MaxPp){
+		
+		Mob[Grade].Pp = Mob[Grade].MaxPp;
+		
+	}
+	
 }
 
 int SetMobStatGrade(int Grade,int Exp,int Gold, int MaxHp, int HpGen, int MaxPp, int PpGen, int Atk, int Def, int Speed, int Power)
@@ -1030,8 +1056,10 @@ int SetMobStatGrade(int Grade,int Exp,int Gold, int MaxHp, int HpGen, int MaxPp,
 }
 /*베타 0.1
 기본 프로그램 구현
-/*베타 0.11
+*베타 0.11
 포션 아이템 추가
-/*베타 0.12
+*베타 0.12
 기절시 경험치 0으로 초기화와 요구 경험치 2배 증가 
+*베타 0.13
+11~20층 몹 추가 및 벨런스 패치 
 */
