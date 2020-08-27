@@ -69,3 +69,8 @@ beta 0.14(20/8/26)
 -Add More Mobs
 
 -ReNual 1~10 Grade Mobs
+
+
+beta 0.15(20/8/27)
+
+Some Variable changed for double.
