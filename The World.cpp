@@ -497,13 +497,13 @@ int CheckMobDied(int Grade)//몹 사망여부
 		p.Exp += Mob[Grade].Exp;
 		Line();
 		ColorString(2,"");
-		printf("경험치를 %d 획득하였습니다!\n",Mob[Grade].Exp);
+		printf("경험치를 %.0f 획득하였습니다!\n",Mob[Grade].Exp);
 		Sleep(800);
 		
 		Money += Mob[Grade].MaxExp;
 		Line();
 		ColorString(6,"");
-		printf("%d골드를 획득하였습니다!\n",Mob[Grade].MaxExp);
+		printf("%.0f골드를 획득하였습니다!\n",Mob[Grade].MaxExp);
 		Sleep(800);
 		
 		CheckLvUp();
