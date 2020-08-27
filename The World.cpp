@@ -68,7 +68,7 @@ int SetMobStat();//몹 스텟 초기화
 
 int MobReganTick(int Grade);
 
-int SetMobStatGrade(int Grade,int Exp,int Gold, int MaxHp, int HpGen, int MaxPp, int PpGen, int Atk, int Def, int Speed, int Power);//몹 스텟 초기화 옵션 
+int SetMobStatGrade(int Grade,double Exp,double Gold, double MaxHp, double HpGen, double MaxPp, double PpGen, double Atk, double Def, double Speed, double Power);//몹 스텟 초기화 옵션 
 
 //순서대로 몹 출현 층,주는 경험치,주는 골드, 채력,턴마다 리젠되는 채력,마나,턴마다 리젠되는 마나,공격력,방어력,속도,힘 입니다. 
 
@@ -103,13 +103,14 @@ struct stat
 		/*-----변수 선언부-----*/ 
 	
 	//스텟 
-	int Lv,Exp,MaxExp;//레벨,경험치 관련 
-	int Hp,MaxHp,HpGen;//hp관련 
-	int Pp,MaxPp,PpGen;//pp관련 
-	int Atk;//공격관련 
-	int Def;//방어 
-	int Speed;//속도
-	int Power;//힘 
+	float Lv;
+	double Exp,MaxExp;//레벨,경험치 관련 
+	double Hp,MaxHp,HpGen;//hp관련 
+	double Pp,MaxPp,PpGen;//pp관련 
+	double Atk;//공격관련 
+	double Def;//방어 
+	double Speed;//속도
+	double Power;//힘 
 	char Name[50];
 	
 	int x,y;//좌표 
@@ -179,7 +180,7 @@ char ItemName[19][50] = {"귀환석\n기절시 마을로 귀환시켜줍니다.",
 "없음",
 };
 
-int Money = 100;//돈 
+double Money = 100;//돈 
 
 char MAPINF[21][1000] =
 {
@@ -462,7 +463,7 @@ int Fight_Attek(int Grade)//공격
 		
 		Line();
 		ColorString(15,"");
-		printf("%s에게 %d의 피해를 입혔습니다!\n",MobName[Grade], p.Atk - Mob[Grade].Def);
+		printf("%s에게 %.0f의 피해를 입혔습니다!\n",MobName[Grade], p.Atk - Mob[Grade].Def);
 		Sleep(800);
 		
 		Mob[Grade].Hp -= p.Atk - Mob[Grade].Def;	
@@ -477,7 +478,7 @@ int Fight_Attek(int Grade)//공격
 	
 	Line();
 	ColorString(15,"");
-	printf("%s 남은 채력:%d/%d\n",MobName[Grade], Mob[Grade].MaxHp, Mob[Grade].Hp);
+	printf("%s 남은 채력:%.0f/%.0f\n",MobName[Grade], Mob[Grade].MaxHp, Mob[Grade].Hp);
 	Sleep(800);
 	
 }
@@ -535,7 +536,7 @@ int MobAttek(int Grade)//몹 공격
 	
 		Line();
 		ColorString(4,"");
-		printf("%d의 피해를 입었습니다!\n", Mob[Grade].Atk - p.Def);
+		printf("%.0f의 피해를 입었습니다!\n", Mob[Grade].Atk - p.Def);
 		Sleep(800);
 		
 	}
@@ -548,7 +549,7 @@ int MobAttek(int Grade)//몹 공격
 	
 	Line();
 	ColorString(2,"");
-	printf("남은 채력 %d/%d\n",p.MaxHp,p.Hp);
+	printf("남은 채력 %.0f/%.0f\n",p.MaxHp,p.Hp);
 	Sleep(800);
 
 	
@@ -612,7 +613,7 @@ int Shop()//상점
 	
 	Line();
 	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]");
-	printf("소지금 %dG\n",Money);
+	printf("소지금 %.0fG\n",Money);
 	ColorString(7,"1:소모품\n");
 	//ColorString(7,"2:장비\n");
 	//ColorString(7,"3:판매\n");
@@ -659,7 +660,7 @@ int ShopExpend()//소모품
 	
 	Line();
 	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]");
-	printf("소지금 %dG\n",Money);
+	printf("소지금 %.0fG\n",Money);
 	ColorString(7,"1:물약\n");
 	ColorString(7,"2:[10골드]귀환석\n");
 	ColorString(7,"3:탈주\n");
@@ -702,7 +703,7 @@ int ShopPotion()//물약
 	
 	Line();
 	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]");
-	printf("소지금 %dG\n",Money);
+	printf("소지금 %.0fG\n",Money);
 	ColorString(7,"1:[50골드]채력 물약(소)[Hp 50 회복]\n");
 	ColorString(7,"2:[1,000골드]채력 물약(중)[Hp 750 회복]\n");
 	ColorString(7,"3:[10,000골드]채력 물약(대)[Hp 5,000 회복]\n");
@@ -819,11 +820,11 @@ int ShowStat()//스텟창
 	ColorString(1,"-스테이더스-\n");
 	Line();
 	ColorString(15,"");
-	printf("LV:%-20d Exp:%-10d/%-10d\n",p.Lv,p.MaxExp,p.Exp);
-	printf("Hp:%-10d/%-10dHpGen:%-20d\n",p.MaxHp,p.Hp,p.HpGen);
-	printf("Pp:%-10d/%-10dPpGen:%-20d\n",p.MaxPp,p.Pp,p.PpGen); 
-	printf("Atk:%-20dDef:%-20d\n",p.Atk,p.Def);
-	printf("Speed:%-18dPower:%-20d\n",p.Speed,p.Power);
+	printf("LV:%-20.0f Exp:%-10.0f/%-10.0f\n",p.Lv,p.MaxExp,p.Exp);
+	printf("Hp:%-10.0f/%-10.0fHpGen:%-20.0f\n",p.MaxHp,p.Hp,p.HpGen);
+	printf("Pp:%-10.0f/%-10.0fPpGen:%-20.0f\n",p.MaxPp,p.Pp,p.PpGen); 
+	printf("Atk:%-20.0fDef:%-20.0f\n",p.Atk,p.Def);
+	printf("Speed:%-18.0fPower:%-20.0f\n",p.Speed,p.Power);
 	
 }
 
@@ -1044,7 +1045,7 @@ int MobReganTick(int Grade)
 	
 }
 
-int SetMobStatGrade(int Grade,int Exp,int Gold, int MaxHp, int HpGen, int MaxPp, int PpGen, int Atk, int Def, int Speed, int Power)
+int SetMobStatGrade(int Grade,double Exp,double Gold, double MaxHp, double HpGen, double MaxPp, double PpGen, double Atk, double Def, double Speed, double Power)
 {
 	
 	Mob[Grade].Exp = Exp,Mob[Grade].MaxExp = Gold;
@@ -1054,6 +1055,9 @@ int SetMobStatGrade(int Grade,int Exp,int Gold, int MaxHp, int HpGen, int MaxPp,
 	Mob[Grade].Speed = Speed, Mob[Grade].Power = Power;//속도, 힘 
 	
 }
+
+
+
 /*베타 0.1
 기본 프로그램 구현
 *베타 0.11
