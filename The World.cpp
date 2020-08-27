@@ -754,17 +754,17 @@ int LevelUp()//·¹º§¾÷
 	
 	p.Lv += 1; 
 	p.Exp -= p.MaxExp;
-	p.MaxHp *= 1.04;
-	p.MaxPp *= 1.041;
+	p.MaxHp *= (int)1.04;
+	p.MaxPp *= (int)1.041;
 	p.Hp = p.MaxHp;
 	p.Pp = p.MaxPp;
-	p.MaxExp *= 1.043;
+	p.MaxExp *= (int)1.043;
 	p.HpGen = p.Hp*0.01;
 	p.PpGen = p.Pp*0.02;
-	p.Atk += p.Lv/10;
-	p.Def += p.Lv/35;
-	p.Speed += p.Lv/100;
-	p.Power += p.Lv/20;
+	p.Atk += (int)p.Lv/10;
+	p.Def += (int)p.Lv/35;
+	p.Speed += (int)p.Lv/100;
+	p.Power += (int)p.Lv/20;
 	
 	CheckLvUp();
 	
