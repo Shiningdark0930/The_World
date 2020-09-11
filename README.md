@@ -74,3 +74,7 @@ beta 0.14(20/8/26)
 beta 0.15(20/8/27)
 
 Some Variable changed for double.
+
+beta 0.16(20/9/11)
+
+Change Level System.
