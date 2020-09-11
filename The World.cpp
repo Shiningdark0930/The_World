@@ -270,7 +270,7 @@ int main()//메인함수
 	/*-----변수 초기화-----*/
 	
 	//플레이어 스텟	
-	p.Lv = 1, p.Exp = 0, p.MaxExp = 20;//레벨 
+	p.Lv = 1, p.Exp = 100, p.MaxExp = 20;//레벨 
 	p.MaxHp = 10, p.Hp = p.MaxHp, p.HpGen = 0;//채력 
 	p.MaxPp = 8, p.Pp = p.MaxPp, p.PpGen = 0;//마나 
 	p.Atk = 3, p.Def = 0;//공격력, 방어력
@@ -836,7 +836,7 @@ int LevelUp()//레벨업
 	p.BOD += Stat[4];
 	
 	p.MaxExp += p.MaxExp/95 + 1;
-	p.Exp = 0;
+	p.Exp -= p.MaxExp;
 	
 	p.Lv += 1;
 	
