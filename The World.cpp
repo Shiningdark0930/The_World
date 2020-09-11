@@ -270,7 +270,7 @@ int main()//메인함수
 	/*-----변수 초기화-----*/
 	
 	//플레이어 스텟	
-	p.Lv = 1, p.Exp = 0, p.MaxExp = 10;//레벨 
+	p.Lv = 1, p.Exp = 0, p.MaxExp = 20;//레벨 
 	p.MaxHp = 10, p.Hp = p.MaxHp, p.HpGen = 0;//채력 
 	p.MaxPp = 8, p.Pp = p.MaxPp, p.PpGen = 0;//마나 
 	p.Atk = 3, p.Def = 0;//공격력, 방어력
@@ -790,7 +790,7 @@ int LevelUp()//레벨업
 	Line();
 	ColorString(6,"레벨이 올랐습니다!\n");
 	
-	p.SP += p.Lv*(3+0.1*p.Lv);
+	p.SP += 5+p.Lv/20;
 	
 	MXS:
 	
@@ -1172,11 +1172,16 @@ int SetMobStat()//몹 스텟 초기화
 {
 	
 	//층수/경치/돈/피/젠/마나/젠/공/방/속/힘 
-	SetMobStatGrade(0,10,5,5,0,0,0,1,0,4,1);
-	SetMobStatGrade(1,15,6,10,0,0,0,2,0,4,1);
-	SetMobStatGrade(2,20,8,20,0,0,0,3,0,5,1);
-	SetMobStatGrade(3,30,15,50,0,0,0,1,1,5,1);
-	SetMobStatGrade(4,40,15,50,0,0,0,3,0,4,1);
+	SetMobStatGrade(0,5,5,5,0,0,0,1,0,4,1);
+	SetMobStatGrade(1,8,6,10,0,0,0,2,0,4,1);
+	SetMobStatGrade(2,15,8,20,0,0,0,3,0,5,1);
+	SetMobStatGrade(3,20,15,50,0,0,0,1,1,5,1);
+	SetMobStatGrade(4,30,15,40,0,0,0,3,0,6,1);
+	SetMobStatGrade(5,40,20,60,0,0,0,4,0,6,1);
+	SetMobStatGrade(6,52,25,70,0,0,0,5,0,7,1);
+	SetMobStatGrade(7,65,25,80,0,0,0,5,0,7,1);
+	SetMobStatGrade(8,80,30,100,0,0,0,7,0,8,1);
+	SetMobStatGrade(9,150,50,250,0,0,0,15,0,10,2);
 	SetMobStatGrade(20,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100);
     
 }
