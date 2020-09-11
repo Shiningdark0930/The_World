@@ -781,6 +781,11 @@ int CheckLvUp()//레벨업 확인
 int LevelUp()//레벨업 
 {
 	
+	p.MaxHp = 10, p.Hp = p.MaxHp, p.HpGen = 0;//채력 
+	p.MaxPp = 8, p.Pp = p.MaxPp, p.PpGen = 0;//마나 
+	p.Atk = 3, p.Def = 0;//공격력, 방어력
+	p.Speed = 10, p.Power = 1;//속도, 힘 
+	
 	Sleep(1000);
 	
 	int Stat[6];
