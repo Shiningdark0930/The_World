@@ -270,7 +270,7 @@ int main()//메인함수
 	/*-----변수 초기화-----*/
 	
 	//플레이어 스텟	
-	p.Lv = 1, p.Exp = 100, p.MaxExp = 20;//레벨 
+	p.Lv = 1, p.Exp = 0, p.MaxExp = 20;//레벨 
 	p.MaxHp = 10, p.Hp = p.MaxHp, p.HpGen = 0;//채력 
 	p.MaxPp = 8, p.Pp = p.MaxPp, p.PpGen = 0;//마나 
 	p.Atk = 3, p.Def = 0;//공격력, 방어력
@@ -278,6 +278,8 @@ int main()//메인함수
 
 	//플래이어 분배스텟
 	p.STR = 0, p.INT = 0, p.SPD = 0, p.REG = 0, p.BOD = 0;//분배스텟
+
+	p.SP = 0;
 
 	City();
 
@@ -840,7 +842,7 @@ int LevelUp()//레벨업
 	p.REG += Stat[3];
 	p.BOD += Stat[4];
 	
-	p.MaxExp += p.MaxExp/95 + 1;
+	p.MaxExp += p.MaxExp/10 + 1;
 	p.Exp -= p.MaxExp;
 	
 	p.Lv += 1;
@@ -1186,7 +1188,17 @@ int SetMobStat()//몹 스텟 초기화
 	SetMobStatGrade(6,52,25,70,0,0,0,5,0,7,1);
 	SetMobStatGrade(7,65,25,80,0,0,0,5,0,7,1);
 	SetMobStatGrade(8,80,30,100,0,0,0,7,0,8,1);
-	SetMobStatGrade(9,150,50,250,0,0,0,15,0,10,2);
+	SetMobStatGrade(9,150,50,250,0,0,0,15,3,10,2);
+	SetMobStatGrade(10,100,35,175,1,0,0,17,8,10,2);
+	SetMobStatGrade(11,130,50,250,3,0,0,20,10,12,3);
+	SetMobStatGrade(12,160,60,325,5,0,0,25,13,12,3);
+	SetMobStatGrade(13,200,70,400,20,0,0,15,15,11,2);
+	SetMobStatGrade(14,240,80,450,2,0,0,40,23,11,3);
+	SetMobStatGrade(15,280,90,575,1,0,0,35,20,13,3);
+	SetMobStatGrade(16,300,100,600,30,0,0,25,15,13,4);
+	SetMobStatGrade(17,350,120,700,7,0,0,37,40,12,4);
+	SetMobStatGrade(18,500,150,900,9,0,0,50,35,12,4);
+	SetMobStatGrade(19,1000,200,1500,47,0,0,125,70,20,5);
 	SetMobStatGrade(20,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100);
     
 }
