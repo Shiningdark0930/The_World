@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<windows.h>
 
-#define Sleep(X); //이 옵션을 사용시 디버그 모드 실행. 모든 지연 제거. 
+//#define Sleep(X); //이 옵션을 사용시 디버그 모드 실행. 모든 지연 제거. 
 
 /*
 몹을 추가하고 싶을 때
@@ -68,7 +68,7 @@ int SetMobStat();//몹 스텟 초기화
 
 int MobReganTick(int Grade);
 
-int SetMobStatGrade(int Grade,double Exp,double Gold, double MaxHp, double HpGen, double MaxPp, double PpGen, double Atk, double Def, double Speed, double Power);//몹 스텟 초기화 옵션 
+int SetMobStatGrade(int Grade,int Exp,int Gold, int MaxHp, int HpGen, int MaxPp, int PpGen, int Atk, int Def, int Speed, int Power);//몹 스텟 초기화 옵션 
 
 //순서대로 몹 출현 층,주는 경험치,주는 골드, 채력,턴마다 리젠되는 채력,마나,턴마다 리젠되는 마나,공격력,방어력,속도,힘 입니다. 
 
@@ -103,19 +103,21 @@ struct stat
 		/*-----변수 선언부-----*/ 
 	
 	//스텟 
-	float Lv;
-	double Exp,MaxExp;//레벨,경험치 관련 
-	double Hp,MaxHp,HpGen;//hp관련 
-	double Pp,MaxPp,PpGen;//pp관련 
-	double Atk;//공격관련 
-	double Def;//방어 
-	double Speed;//속도
-	double Power;//힘 
+	int Lv;
+	int Exp,MaxExp;//레벨,경험치 관련 
+	int Hp,MaxHp,HpGen;//hp관련 
+	int Pp,MaxPp,PpGen;//pp관련 
+	int Atk;//공격관련 
+	int Def;//방어 
+	int Speed;//속도
+	int Power;//힘 
 	char Name[50];
 	
 	int x,y;//좌표 
 	
 	//분배스텟
+	
+	int SP = 0;//스텟 포인트 
 	
 	int STR;//힘(공격, 힘에 영향)	 
 	int INT;//지능(마나,마나재생력,속도에 영향) 
@@ -141,7 +143,37 @@ struct stat
 
 struct stat p;
 
-struct stat Mob[21];//이것도 늘려주세요. 
+struct stat Mob[21];//이것도 늘려주세요.
+
+/*
+0:없음
+1~4:갑옷 세트
+5:목검
+6:활
+7:지팡이
+8:방패 
+9:로브 
+*/
+/*
+1:투구
+2:갑옷
+3:바지
+4:신발
+5:무기
+6:방패 
+*/
+int EStat[10][11] = //6개중 옵션/장비 번호/채/마/공/방/속/힘
+{
+{1,1,0,0,0,0,0,0,10,0,6},
+{2,2,0,0,0,0,0,0,20,0,12},
+{3,3,0,0,0,0,0,0,15,0,9},
+{4,4,0,0,0,0,0,0,5,0,3},
+{5,5,0,0,0,0,0,20,0,0,5},
+{5,6,0,0,0,0,0,20,0,50,3},
+{5,7,0,0,30,5,0,0,0,30,4},
+{6,8,0,0,0,0,0,0,30,0,7},
+{2,9,0,3,20,3,0,0,0,20,1}
+};
 
 //아이템 
 
@@ -153,21 +185,21 @@ struct stat Mob[21];//이것도 늘려주세요.
 19:없음 
 */
 
-int HpPotionHeal[4] = {50,750,5000,30000};
+int HpPotionHeal[4] = {5,8,15,25};
 
 int Item[19] = {5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
-int ItemPrize[19] = {10,50,1000,10000,100000,50,1000,10000,100000,50,50,50,70,30,100,70,20,150,0};
+int ItemPrize[19] = {10,5,10,20,40,5,10,20,40,50,50,50,60,30,100,70,20,150,0};
 
 char ItemName[19][50] = {"귀환석\n기절시 마을로 귀환시켜줍니다.",
-"채력 물약(소)\nHp를 50 회복합니다.",
-"채력 물약(중)\nHp를 750 회복합니다.",
-"채력 물약(대)\nHp를 5,000 회복합니다.",
-"채력 물약(특대)\nHp를 30,000 회복합니다.",
-"마나 물약(소)\nPp를 50 회복합니다.",
-"마나 물약(중)\nPp를 750 회복합니다.",
-"마나 물약(대)\nPp를 5,000 회복합니다.",
-"마나 물약(특대)\nPp를 30,000 회복합니다.",
+"채력 물약(소)\nHp를 5 회복합니다.",
+"채력 물약(중)\nHp를 8 회복합니다.",
+"채력 물약(대)\nHp를 15 회복합니다.",
+"채력 물약(특대)\nHp를 25 회복합니다.",
+"마나 물약(소)\nPp를 5 회복합니다.",
+"마나 물약(중)\nPp를 8 회복합니다.",
+"마나 물약(대)\nPp를 15 회복합니다.",
+"마나 물약(특대)\nPp를 25 회복합니다.",
 "초보자의 목검",
 "초보자의 나무 활",
 "참나무 지팡이",
@@ -180,7 +212,7 @@ char ItemName[19][50] = {"귀환석\n기절시 마을로 귀환시켜줍니다.",
 "없음",
 };
 
-double Money = 100;//돈 
+int Money = 0;//돈 
 
 char MAPINF[21][1000] =
 {
@@ -238,11 +270,11 @@ int main()//메인함수
 	/*-----변수 초기화-----*/
 	
 	//플레이어 스텟	
-	p.Lv = 1, p.Exp = 0, p.MaxExp = 100;//레벨 
-	p.MaxHp = 100, p.Hp = p.MaxHp, p.HpGen = 0;//채력 
-	p.MaxPp = 50, p.Pp = p.MaxPp, p.PpGen = 1;//마나 
-	p.Atk = 5, p.Def = 0;//공격력, 방어력
-	p.Speed = 100, p.Power = 10;//속도, 힘 
+	p.Lv = 1, p.Exp = 0, p.MaxExp = 10;//레벨 
+	p.MaxHp = 10, p.Hp = p.MaxHp, p.HpGen = 0;//채력 
+	p.MaxPp = 8, p.Pp = p.MaxPp, p.PpGen = 0;//마나 
+	p.Atk = 3, p.Def = 0;//공격력, 방어력
+	p.Speed = 10, p.Power = 1;//속도, 힘 
 
 	//플래이어 분배스텟
 	p.STR = 0, p.INT = 0, p.SPD = 0, p.REG = 0, p.BOD = 0;//분배스텟
@@ -463,7 +495,7 @@ int Fight_Attek(int Grade)//공격
 		
 		Line();
 		ColorString(15,"");
-		printf("%s에게 %.0f의 피해를 입혔습니다!\n",MobName[Grade], p.Atk - Mob[Grade].Def);
+		printf("%s에게 %d의 피해를 입혔습니다!\n",MobName[Grade], p.Atk - Mob[Grade].Def);
 		Sleep(800);
 		
 		Mob[Grade].Hp -= p.Atk - Mob[Grade].Def;	
@@ -478,7 +510,7 @@ int Fight_Attek(int Grade)//공격
 	
 	Line();
 	ColorString(15,"");
-	printf("%s 남은 채력:%.0f/%.0f\n",MobName[Grade], Mob[Grade].MaxHp, Mob[Grade].Hp);
+	printf("%s 남은 채력:%d/%d\n",MobName[Grade], Mob[Grade].MaxHp, Mob[Grade].Hp);
 	Sleep(800);
 	
 }
@@ -497,13 +529,13 @@ int CheckMobDied(int Grade)//몹 사망여부
 		p.Exp += Mob[Grade].Exp;
 		Line();
 		ColorString(2,"");
-		printf("경험치를 %.0f 획득하였습니다!\n",Mob[Grade].Exp);
+		printf("경험치를 %d 획득하였습니다!\n",Mob[Grade].Exp);
 		Sleep(800);
 		
 		Money += Mob[Grade].MaxExp;
 		Line();
 		ColorString(6,"");
-		printf("%.0f골드를 획득하였습니다!\n",Mob[Grade].MaxExp);
+		printf("%d골드를 획득하였습니다!\n",Mob[Grade].MaxExp);
 		Sleep(800);
 		
 		CheckLvUp();
@@ -536,7 +568,7 @@ int MobAttek(int Grade)//몹 공격
 	
 		Line();
 		ColorString(4,"");
-		printf("%.0f의 피해를 입었습니다!\n", Mob[Grade].Atk - p.Def);
+		printf("%d의 피해를 입었습니다!\n", Mob[Grade].Atk - p.Def);
 		Sleep(800);
 		
 	}
@@ -549,7 +581,7 @@ int MobAttek(int Grade)//몹 공격
 	
 	Line();
 	ColorString(2,"");
-	printf("남은 채력 %.0f/%.0f\n",p.MaxHp,p.Hp);
+	printf("남은 채력 %d/%d\n",p.MaxHp,p.Hp);
 	Sleep(800);
 
 	
@@ -613,7 +645,7 @@ int Shop()//상점
 	
 	Line();
 	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]");
-	printf("소지금 %.0fG\n",Money);
+	printf("소지금 %dG\n",Money);
 	ColorString(7,"1:소모품\n");
 	//ColorString(7,"2:장비\n");
 	//ColorString(7,"3:판매\n");
@@ -660,7 +692,7 @@ int ShopExpend()//소모품
 	
 	Line();
 	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]");
-	printf("소지금 %.0fG\n",Money);
+	printf("소지금 %dG\n",Money);
 	ColorString(7,"1:물약\n");
 	ColorString(7,"2:[10골드]귀환석\n");
 	ColorString(7,"3:탈주\n");
@@ -703,15 +735,15 @@ int ShopPotion()//물약
 	
 	Line();
 	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]");
-	printf("소지금 %.0fG\n",Money);
-	ColorString(7,"1:[50골드]채력 물약(소)[Hp 50 회복]\n");
-	ColorString(7,"2:[1,000골드]채력 물약(중)[Hp 750 회복]\n");
-	ColorString(7,"3:[10,000골드]채력 물약(대)[Hp 5,000 회복]\n");
-	ColorString(7,"4:[100,000골드]채력 물약(특대)[Hp 30,000 회복]\n");
-	ColorString(7,"5:[50골드]마나 물약(소)[Pp 50 회복]\n");
-	ColorString(7,"6:[1,000골드]마나 물약(중)[Pp 750 회복]\n");
-	ColorString(7,"7:[10,000골드]마나 물약(대)[Pp 5,000 회복]\n");
-	ColorString(7,"8:[100,000골드]마나 물약(특대)[Pp 30,000 회복]\n");
+	printf("소지금 %dG\n",Money);
+	ColorString(7,"1:[5골드]채력 물약(소)[Hp 5 회복]\n");
+	ColorString(7,"2:[10골드]채력 물약(중)[Hp 8 회복]\n");
+	ColorString(7,"3:[20골드]채력 물약(대)[Hp 15 회복]\n");
+	ColorString(7,"4:[40골드]채력 물약(특대)[Hp 25 회복]\n");
+	ColorString(7,"5:[5골드]마나 물약(소)[Pp 5 회복]\n");
+	ColorString(7,"6:[10골드]마나 물약(중)[Pp 8 회복]\n");
+	ColorString(7,"7:[20골드]마나 물약(대)[Pp 15 회복]\n");
+	ColorString(7,"8:[40골드]마나 물약(특대)[Pp 25 회복]\n");
 	ColorString(7,"9:탈주\n");
 	
 	scanf("%d", &Select);
@@ -749,23 +781,158 @@ int CheckLvUp()//레벨업 확인
 int LevelUp()//레벨업 
 {
 	
+	Sleep(1000);
+	
+	int Stat[6];
+	
+	int DX;
+	
 	Line();
 	ColorString(6,"레벨이 올랐습니다!\n");
 	
-	p.Lv += 1; 
-	p.Exp -= p.MaxExp;
-	p.MaxHp *= (int)1.04;
-	p.MaxPp *= (int)1.041;
+	p.SP += p.Lv*(3+0.1*p.Lv);
+	
+	MXS:
+	
+	Line();
+	ColorString(1,"스텟 분배를 해 주세요.");
+	printf("[스텟 포인트:%d]\n",p.SP);
+	
+	Line();
+	ColorString(4,"STR:힘 스텟\n");
+	ColorString(1,"INT:마법력 스텟\n");
+	ColorString(2,"SPD:속도 스텟\n");
+	ColorString(6,"REG:재생력 스텟\n");
+	ColorString(5,"BOD:맷집 스텟\n");
+	
+	ColorString(15,"STR INT SPD REG BOD에 각각 부여할 스텟 수치를 순서대로 입력해 주세요.\n");
+	
+	scanf("%d %d %d %d %d", &Stat[0], &Stat[1], &Stat[2], &Stat[3], &Stat[4]);
+	Stat[5] = Stat[0]+Stat[1]+Stat[2]+Stat[3]+Stat[4];
+	
+	if(Stat[5]>p.SP){
+		
+		Line();
+		ColorString(4,"보유하고 있는 스텟 포인트보다 사용량이 많습니다!\n");
+		
+		goto MXS;
+		
+	}
+	if(Stat[5]<0){
+		
+		Line();
+		ColorString(4,"음수는 입력 불가합니다!\n"); 
+		
+		goto MXS;
+		
+	}
+	
+	p.SP -= Stat[5];
+	
+	p.STR += Stat[0];
+	p.INT += Stat[1];
+	p.SPD += Stat[2];
+	p.REG += Stat[3];
+	p.BOD += Stat[4];
+	
+	p.MaxExp += p.MaxExp/95 + 1;
+	p.Exp = 0;
+	
+	p.Lv += 1;
+	
+	DX = 0;
+	
+	while(DX<p.STR)
+	{
+		
+		DX += 1;
+		
+		p.Power += 1;
+		
+		if(DX % 5 == 0){
+			
+			p.Atk += DX/5;
+			
+		}
+			
+	}
+	
+	DX = 0;
+	
+	while(DX<p.INT)
+	{
+		
+		DX += 1;
+		
+		p.MaxPp += DX/3;
+		
+		if(DX % 5 == 0){
+			
+			p.Speed += DX/10;
+			
+		}
+			
+	}
+	
+	DX = 0;
+	
+	while(DX<p.SPD)
+	{
+		
+		DX += 1;
+		
+		if(DX % 4 == 0){
+			
+			p.Speed += DX/8;
+			
+		}
+				
+	}
+	p.Power += DX/6;
+	
+	DX = 0;
+	
+	while(DX<p.REG)
+	{
+		
+		DX += 1;
+		
+		p.HpGen += DX/40;
+		
+		p.PpGen += DX/30;
+			
+	}
+	
+	DX = 0;
+	
+	while(DX<p.BOD)
+	{
+		
+		DX += 1;
+		
+		p.MaxHp += DX/4;
+			
+	}
+	p.Def += DX/15;
+	
 	p.Hp = p.MaxHp;
 	p.Pp = p.MaxPp;
-	p.MaxExp *= (int)1.043;
-	p.HpGen = p.Hp*0.01;
-	p.PpGen = p.Pp*0.02;
-	p.Atk += (int)p.Lv/10;
-	p.Def += (int)p.Lv/35;
-	p.Speed += (int)p.Lv/100;
-	p.Power += (int)p.Lv/20;
 	
+	ColorString(6,"스텟 분배가 완료되었습니다!\n");
+	
+	Line();
+	ColorString(4,"");
+	printf("STR:%d\n",p.STR);
+	ColorString(1,"");
+	printf("INT:%d\n",p.INT);
+	ColorString(2,"");
+	printf("SPD:%d\n",p.SPD);
+	ColorString(6,"");
+	printf("REG:%d\n",p.REG);
+	ColorString(5,"");
+	printf("BOD:%d\n",p.BOD);
+	
+	ShowStat();	
 	CheckLvUp();
 	
 }
@@ -820,11 +987,11 @@ int ShowStat()//스텟창
 	ColorString(1,"-스테이더스-\n");
 	Line();
 	ColorString(15,"");
-	printf("LV:%-20.0f Exp:%-10.0f/%-10.0f\n",p.Lv,p.MaxExp,p.Exp);
-	printf("Hp:%-10.0f/%-10.0fHpGen:%-20.0f\n",p.MaxHp,p.Hp,p.HpGen);
-	printf("Pp:%-10.0f/%-10.0fPpGen:%-20.0f\n",p.MaxPp,p.Pp,p.PpGen); 
-	printf("Atk:%-20.0fDef:%-20.0f\n",p.Atk,p.Def);
-	printf("Speed:%-18.0fPower:%-20.0f\n",p.Speed,p.Power);
+	printf("LV:%-20d Exp:%-10d/%-10d\n",p.Lv,p.MaxExp,p.Exp);
+	printf("Hp:%-10d/%-10d HpGen:%-20d\n",p.MaxHp,p.Hp,p.HpGen);
+	printf("Pp:%-10d/%-10d PpGen:%-20d\n",p.MaxPp,p.Pp,p.PpGen); 
+	printf("Atk:%-20d Def:%-20d\n",p.Atk,p.Def);
+	printf("Speed:%-18d Power:%-20d\n",p.Speed,p.Power);
 	
 }
 
@@ -882,6 +1049,8 @@ int SelectItem()
 		i += 1;
 		
 	}
+	Line();
+	ColorString(15,"없는 번호:쓸모없는 턴 소비\n"); 
 	
 	scanf("%d", &Select);
 	
@@ -921,30 +1090,30 @@ int Useitem(int Num)
 				Item[0] -= 1;
 				City();
 				break;
-				
+			
 			case 1:
 				break;
-			
+				
 			case 2:
 				break;
-			
+				
 			case 3:
 				break;
-			
+
 			case 4:
 				break;
-			
+				
 			case 5:
 				break;
-			
+				
 			case 6:
 				break;
-			
+				
 			case 7:
 				break;
-			
+				
 			case 8:
-				break;	
+				break;
 				
 			default:
 				Line();
@@ -1002,26 +1171,12 @@ int ColorString(int Color,char String[])//색깔 택스트 출력
 int SetMobStat()//몹 스텟 초기화 
 {
 	
-	SetMobStatGrade(0,100,10,30,0,0,0,3,0,40,3);
-	SetMobStatGrade(1,200,20,40,0,0,0,4,0,100,6);
-	SetMobStatGrade(2,400,40,60,0,0,0,6,0,100,9);
-	SetMobStatGrade(3,700,70,90,1,0,0,9,0,100,12);
-	SetMobStatGrade(4,1100,120,150,1,0,0,13,1,100,15);
-	SetMobStatGrade(5,1600,190,230,2,0,0,18,2,100,18);
-	SetMobStatGrade(6,2200,280,480,4,0,0,24,3,100,21);
-	SetMobStatGrade(7,2900,450,750,7,0,0,31,4,100,24);
-	SetMobStatGrade(8,3700,600,1000,10,0,0,39,5,100,27);
-	SetMobStatGrade(9,15000,2000,5000,50,10,0,50,10,100,50);
-	SetMobStatGrade(10,5000,800,2000,20,10,1,100,20,100,60);
-	SetMobStatGrade(11,10000,1700,3000,30,20,2,200,35,100,70);
-	SetMobStatGrade(12,15000,2600,5000,50,30,3,300,70,100,80);
-	SetMobStatGrade(13,20000,3500,8500,85,40,4,450,120,100,90);
-	SetMobStatGrade(14,25000,4700,10000,200,50,5,700,200,100,100);
-	SetMobStatGrade(15,30000,6000,17500,175,60,6,1350,300,100,110);
-	SetMobStatGrade(16,40000,8000,25000,250,70,7,1750,450,100,120);
-	SetMobStatGrade(17,50000,10500,40000,400,80,8,2500,1000,100,130);
-	SetMobStatGrade(18,70000,14500,100000,1000,90,9,4000,1500,100,140);
-	SetMobStatGrade(19,200000,25000,250000,2500,200,10,10000,3000,100,200);
+	//층수/경치/돈/피/젠/마나/젠/공/방/속/힘 
+	SetMobStatGrade(0,10,5,5,0,0,0,1,0,4,1);
+	SetMobStatGrade(1,15,6,10,0,0,0,2,0,4,1);
+	SetMobStatGrade(2,20,8,20,0,0,0,3,0,5,1);
+	SetMobStatGrade(3,30,15,50,0,0,0,1,1,5,1);
+	SetMobStatGrade(4,40,15,50,0,0,0,3,0,4,1);
 	SetMobStatGrade(20,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100);
     
 }
@@ -1045,7 +1200,7 @@ int MobReganTick(int Grade)
 	
 }
 
-int SetMobStatGrade(int Grade,double Exp,double Gold, double MaxHp, double HpGen, double MaxPp, double PpGen, double Atk, double Def, double Speed, double Power)
+int SetMobStatGrade(int Grade,int Exp,int Gold, int MaxHp, int HpGen, int MaxPp, int PpGen, int Atk, int Def, int Speed, int Power)
 {
 	
 	Mob[Grade].Exp = Exp,Mob[Grade].MaxExp = Gold;
@@ -1056,7 +1211,27 @@ int SetMobStatGrade(int Grade,double Exp,double Gold, double MaxHp, double HpGen
 	
 }
 
-
+int EqupArmor(int What, int Num,  int Hp, int HpGen, int Pp, int PpGen, int Atk, int Def,int Speed, int Power, int Kg)
+{
+	
+	switch(What)
+	{
+		
+		case 1:
+			break;
+		
+		case 2:
+			break;
+			
+		case 3:
+			break;
+			
+		case 4:
+			break;
+				
+	}
+	
+}
 
 /*베타 0.1
 기본 프로그램 구현
