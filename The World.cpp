@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<windows.h>
 
-#define Sleep(X); //이 옵션을 사용시 디버그 모드 실행. 모든 지연 제거. 
+//#define Sleep(X); //이 옵션을 사용시 디버그 모드 실행. 모든 지연 제거. 
 
 /*
 몹을 추가하고 싶을 때
@@ -272,7 +272,7 @@ int main()//메인함수
 	/*-----변수 초기화-----*/
 	
 	//플레이어 스텟	
-	p.Lv = 1, p.Exp = 1000000, p.MaxExp = 20;//레벨 
+	p.Lv = 1, p.Exp = 0, p.MaxExp = 20;//레벨 
 	p.MaxHp = 10, p.Hp = p.MaxHp, p.HpGen = 0;//채력 
 	p.MaxPp = 8, p.Pp = p.MaxPp, p.PpGen = 0;//마나 
 	p.Atk = 3, p.Def = 0;//공격력, 방어력
