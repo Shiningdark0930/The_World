@@ -550,7 +550,7 @@ int CheckMobDied(int Grade)//¸÷ »ç¸Á¿©ºÎ
 			
 		}
 		
-		Dungeon(Grade+1);
+		Dungeon_Main(Grade+1);
 		
 	}
 	
