@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<windows.h>
 
-//#define Sleep(X); //이 옵션을 사용시 디버그 모드 실행. 모든 지연 제거. 
+#define Sleep(X); //이 옵션을 사용시 디버그 모드 실행. 모든 지연 제거. 
 
 /*
 몹을 추가하고 싶을 때
@@ -71,6 +71,8 @@ int MobReganTick(int Grade);
 int SetMobStatGrade(int Grade,int Exp,int Gold, int MaxHp, int HpGen, int MaxPp, int PpGen, int Atk, int Def, int Speed, int Power);//몹 스텟 초기화 옵션 
 
 //순서대로 몹 출현 층,주는 경험치,주는 골드, 채력,턴마다 리젠되는 채력,마나,턴마다 리젠되는 마나,공격력,방어력,속도,힘 입니다. 
+
+int UseSP();
 
 int ColorString(int Color,char String[]);//색깔 코드 바꾸기 함수 
 
@@ -185,11 +187,11 @@ int EStat[10][11] = //6개중 옵션/장비 번호/채/마/공/방/속/힘
 19:없음 
 */
 
-int HpPotionHeal[4] = {5,8,15,25};
+int HpPotionHeal[4] = {5,10,30,100};
 
 int Item[19] = {5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
-int ItemPrize[19] = {10,5,10,20,40,5,10,20,40,50,50,50,60,30,100,70,20,150,0};
+int ItemPrize[19] = {10,5,15,40,200,5,15,40,200,50,50,50,60,30,100,70,20,150,0};
 
 char ItemName[19][50] = {"귀환석\n기절시 마을로 귀환시켜줍니다.",
 "채력 물약(소)\nHp를 5 회복합니다.",
@@ -270,7 +272,7 @@ int main()//메인함수
 	/*-----변수 초기화-----*/
 	
 	//플레이어 스텟	
-	p.Lv = 1, p.Exp = 0, p.MaxExp = 20;//레벨 
+	p.Lv = 1, p.Exp = 1000000, p.MaxExp = 20;//레벨 
 	p.MaxHp = 10, p.Hp = p.MaxHp, p.HpGen = 0;//채력 
 	p.MaxPp = 8, p.Pp = p.MaxPp, p.PpGen = 0;//마나 
 	p.Atk = 3, p.Def = 0;//공격력, 방어력
@@ -542,6 +544,12 @@ int CheckMobDied(int Grade)//몹 사망여부
 		
 		CheckLvUp();
 		
+		if(p.SP > 0){
+			
+			UseSP();
+			
+		}
+		
 		Dungeon(Grade+1);
 		
 	}
@@ -783,21 +791,34 @@ int CheckLvUp()//레벨업 확인
 int LevelUp()//레벨업 
 {
 	
-	p.MaxHp = 10, p.Hp = p.MaxHp, p.HpGen = 0;//채력 
-	p.MaxPp = 8, p.Pp = p.MaxPp, p.PpGen = 0;//마나 
-	p.Atk = 3, p.Def = 0;//공격력, 방어력
-	p.Speed = 10, p.Power = 1;//속도, 힘 
+	p.MaxExp += p.MaxExp/20 + 1;
+	p.Exp -= p.MaxExp;
+	p.Hp = p.MaxHp;
+	p.Pp = p.MaxPp;
 	
-	Sleep(1000);
+	p.Lv += 1;
 	
-	int Stat[6];
-	
-	int DX;
+	Sleep(300);
 	
 	Line();
 	ColorString(6,"레벨이 올랐습니다!\n");
 	
-	p.SP += 5+p.Lv/20;
+	p.SP += 3+p.Lv/5;
+	
+	CheckLvUp();
+	
+}
+
+int UseSP(){
+	
+	p.MaxHp = 10,  p.HpGen = 0;//채력 
+	p.MaxPp = 8,  p.PpGen = 0;//마나 
+	p.Atk = 3, p.Def = 0;//공격력, 방어력
+	p.Speed = 10, p.Power = 1;//속도, 힘
+	
+	int DX;
+	
+	int Stat[6];
 	
 	MXS:
 	
@@ -825,7 +846,7 @@ int LevelUp()//레벨업
 		goto MXS;
 		
 	}
-	if(Stat[5]<0){
+	if(Stat[0]<0 && Stat[1]<0 && Stat[2]<0 && Stat[3]<0 && Stat[4]<0){
 		
 		Line();
 		ColorString(4,"음수는 입력 불가합니다!\n"); 
@@ -841,11 +862,6 @@ int LevelUp()//레벨업
 	p.SPD += Stat[2];
 	p.REG += Stat[3];
 	p.BOD += Stat[4];
-	
-	p.MaxExp += p.MaxExp/10 + 1;
-	p.Exp -= p.MaxExp;
-	
-	p.Lv += 1;
 	
 	DX = 0;
 	
@@ -871,7 +887,12 @@ int LevelUp()//레벨업
 		
 		DX += 1;
 		
-		p.MaxPp += DX/3;
+		if(DX % 3 == 0){
+			
+			p.MaxPp += DX/3;
+			
+		}
+		p.MaxPp += 1;
 		
 		if(DX % 5 == 0){
 			
@@ -888,9 +909,9 @@ int LevelUp()//레벨업
 		
 		DX += 1;
 		
-		if(DX % 4 == 0){
+		if(DX % 10 == 0){
 			
-			p.Speed += DX/8;
+			p.Speed += DX/20;
 			
 		}
 				
@@ -904,9 +925,13 @@ int LevelUp()//레벨업
 		
 		DX += 1;
 		
-		p.HpGen += DX/40;
+		if(DX % 120 == 0){
+			
+			p.HpGen += DX/40;
 		
-		p.PpGen += DX/30;
+			p.PpGen += DX/30;
+			
+		}
 			
 	}
 	
@@ -917,7 +942,13 @@ int LevelUp()//레벨업
 		
 		DX += 1;
 		
-		p.MaxHp += DX/4;
+		if(DX % 4 == 0){
+			
+			p.MaxHp += DX/4;
+			
+		}
+		
+		p.MaxHp += 1;
 			
 	}
 	p.Def += DX/15;
@@ -940,7 +971,6 @@ int LevelUp()//레벨업
 	printf("BOD:%d\n",p.BOD);
 	
 	ShowStat();	
-	CheckLvUp();
 	
 }
 
