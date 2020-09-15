@@ -78,3 +78,7 @@ Some Variable changed for double.
 beta 0.16(20/9/11)
 
 Change Level System.
+
+beta 0.17(20/9/15)
+
+Now, there is Speed stat.
