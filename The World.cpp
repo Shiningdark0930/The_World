@@ -1,5 +1,7 @@
 #include<stdio.h>
 #include<windows.h>
+#include<stdlib.h> 
+#include<time.h>
 
 //#define Sleep(X); //이 옵션을 사용시 디버그 모드 실행. 모든 지연 제거. 
 
@@ -74,7 +76,15 @@ int SetMobStatGrade(int Grade,int Exp,int Gold, int MaxHp, int HpGen, int MaxPp,
 
 int UseSP();
 
+int WowPackageShop();
+
+int PAtkMiss(int Grade);
+
+int MAtkMiss(int Grade);
+
 int ColorString(int Color,char String[]);//색깔 코드 바꾸기 함수 
+
+int WowShop();
 
 int Line()
 {
@@ -195,13 +205,13 @@ int ItemPrize[19] = {10,5,15,40,200,5,15,40,200,50,50,50,60,30,100,70,20,150,0};
 
 char ItemName[19][50] = {"귀환석\n기절시 마을로 귀환시켜줍니다.",
 "채력 물약(소)\nHp를 5 회복합니다.",
-"채력 물약(중)\nHp를 8 회복합니다.",
-"채력 물약(대)\nHp를 15 회복합니다.",
-"채력 물약(특대)\nHp를 25 회복합니다.",
+"채력 물약(중)\nHp를 10 회복합니다.",
+"채력 물약(대)\nHp를 30 회복합니다.",
+"채력 물약(특대)\nHp를 100 회복합니다.",
 "마나 물약(소)\nPp를 5 회복합니다.",
-"마나 물약(중)\nPp를 8 회복합니다.",
-"마나 물약(대)\nPp를 15 회복합니다.",
-"마나 물약(특대)\nPp를 25 회복합니다.",
+"마나 물약(중)\nPp를 10 회복합니다.",
+"마나 물약(대)\nPp를 30 회복합니다.",
+"마나 물약(특대)\nPp를 100 회복합니다.",
 "초보자의 목검",
 "초보자의 나무 활",
 "참나무 지팡이",
@@ -215,6 +225,8 @@ char ItemName[19][50] = {"귀환석\n기절시 마을로 귀환시켜줍니다.",
 };
 
 int Money = 0;//돈 
+
+int WowMoney = 5;//영혼 
 
 char MAPINF[21][1000] =
 {
@@ -231,7 +243,7 @@ char MAPINF[21][1000] =
 	{"2층부터 20층의 던전에는 초보자가 잡을 수 없는 마물들이 살고 있다.\n저 멀리 스켈레톤이 보인다.\n"},
 	{"저 멀리 스켈레톤 병사가 보인다.\n"},
 	{"저 멀리 올드 스켈레톤이 보인다.\n"},
-	{"저 멀리 올드 스켈레톤 병사가 보인다.\n"},
+	{"저 멀리 고대 스켈레톤 병사가 보인다.\n"},
 	{"저 멀리 스켈레톤 아처가 보인다.\n"},
 	{"저 멀리 언데드 스켈레톤이 보인다.\n"},
 	{"저 멀리 스켈레톤 군주가 보인다.\n"},
@@ -269,10 +281,12 @@ char MobName[21][100] =
 int main()//메인함수 
 {
 	
+	srand(time(NULL));
+	
 	/*-----변수 초기화-----*/
 	
 	//플레이어 스텟	
-	p.Lv = 1, p.Exp = 0, p.MaxExp = 20;//레벨 
+	p.Lv = 1, p.Exp = 0, p.MaxExp = 10;//레벨 
 	p.MaxHp = 10, p.Hp = p.MaxHp, p.HpGen = 0;//채력 
 	p.MaxPp = 8, p.Pp = p.MaxPp, p.PpGen = 0;//마나 
 	p.Atk = 3, p.Def = 0;//공격력, 방어력
@@ -318,6 +332,7 @@ int City()//마을
 	ColorString(7,"2:잡화상점 입장\n");
 	ColorString(7,"3:스테이더스 확인\n");
 	ColorString(7,"4:정비\n");
+	//ColorString(7,"5:환생상점\n");
 	
 	scanf("%d",&Select);
 	
@@ -343,6 +358,9 @@ int City()//마을
 			SelectItem();
 			goto B1;
 			break;
+		
+		//case 5:
+			//WowShop();
 			
 		default:
 			goto B1;//B1
@@ -429,6 +447,8 @@ int Dungeon_Main(int Grade)//던전 선택창
 int Dungeon_Fight(int Grade)//전투 
 {
 	
+	int MissN;
+	
 	playerRegenTick();
 	
 	Line();
@@ -458,7 +478,14 @@ int Dungeon_Fight(int Grade)//전투
 	{
 		
 		case 1:
-			Fight_Attek(Grade);
+			MissN = rand() %  (((p.Speed+Mob[Grade].Speed)*10)/2);
+			if(MissN < p.Speed*8){
+				Fight_Attek(Grade);
+			}
+			else{
+				PAtkMiss(Grade);
+			}
+			
 			break;
 			
 		case 3:
@@ -476,8 +503,15 @@ int Dungeon_Fight(int Grade)//전투
 	
 	MobReganTick(Grade);
 	
-	MobAttek(Grade);
+	MissN = rand() %  (((p.Speed+Mob[Grade].Speed)*10)/2);
 	
+	if(MissN < Mob[Grade].Speed*8){
+		MobAttek(Grade);
+	}
+	else{
+		MAtkMiss(Grade);
+	}
+		
 	CheckPlayerDied();	
 	
 	goto E1;
@@ -519,8 +553,22 @@ int Fight_Attek(int Grade)//공격
 	
 }
 
+int PAtkMiss(int Grade)
+{
+	
+	Sleep(800);
+	
+	Line();
+	
+	ColorString(4,"");
+	printf("%s이(가) 공격을 회피했습니다!\n",MobName[Grade]);
+	
+}
+
 int CheckMobDied(int Grade)//몹 사망여부 
 {
+	
+	int Select;
 	
 	if(Mob[Grade].Hp<1)
 	{
@@ -594,6 +642,18 @@ int MobAttek(int Grade)//몹 공격
 	printf("남은 채력 %d/%d\n",p.MaxHp,p.Hp);
 	Sleep(800);
 
+	
+}
+
+int MAtkMiss(int Grade)
+{
+	
+	Sleep(800);
+	
+	Line();
+	
+	ColorString(4,"");
+	printf("%s의 공격을 회피했습니다!\n",MobName[Grade]);
 	
 }
 
@@ -747,13 +807,13 @@ int ShopPotion()//물약
 	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]");
 	printf("소지금 %dG\n",Money);
 	ColorString(7,"1:[5골드]채력 물약(소)[Hp 5 회복]\n");
-	ColorString(7,"2:[10골드]채력 물약(중)[Hp 8 회복]\n");
-	ColorString(7,"3:[20골드]채력 물약(대)[Hp 15 회복]\n");
-	ColorString(7,"4:[40골드]채력 물약(특대)[Hp 25 회복]\n");
+	ColorString(7,"2:[15골드]채력 물약(중)[Hp 10 회복]\n");
+	ColorString(7,"3:[40골드]채력 물약(대)[Hp 30 회복]\n");
+	ColorString(7,"4:[200골드]채력 물약(특대)[Hp 100 회복]\n");
 	ColorString(7,"5:[5골드]마나 물약(소)[Pp 5 회복]\n");
-	ColorString(7,"6:[10골드]마나 물약(중)[Pp 8 회복]\n");
-	ColorString(7,"7:[20골드]마나 물약(대)[Pp 15 회복]\n");
-	ColorString(7,"8:[40골드]마나 물약(특대)[Pp 25 회복]\n");
+	ColorString(7,"6:[15골드]마나 물약(중)[Pp 10 회복]\n");
+	ColorString(7,"7:[40골드]마나 물약(대)[Pp 30 회복]\n");
+	ColorString(7,"8:[200골드]마나 물약(특대)[Pp 100 회복]\n");
 	ColorString(7,"9:탈주\n");
 	
 	scanf("%d", &Select);
@@ -791,7 +851,7 @@ int CheckLvUp()//레벨업 확인
 int LevelUp()//레벨업 
 {
 	
-	p.MaxExp += p.MaxExp/20 + 1;
+	p.MaxExp += p.MaxExp/(5+(p.Lv/5)) + 1;
 	p.Exp -= p.MaxExp;
 	p.Hp = p.MaxHp;
 	p.Pp = p.MaxPp;
@@ -1209,26 +1269,26 @@ int SetMobStat()//몹 스텟 초기화
 {
 	
 	//층수/경치/돈/피/젠/마나/젠/공/방/속/힘 
-	SetMobStatGrade(0,5,5,5,0,0,0,1,0,4,1);
-	SetMobStatGrade(1,8,6,10,0,0,0,2,0,4,1);
-	SetMobStatGrade(2,15,8,20,0,0,0,3,0,5,1);
-	SetMobStatGrade(3,20,15,50,0,0,0,1,1,5,1);
-	SetMobStatGrade(4,30,15,40,0,0,0,3,0,6,1);
-	SetMobStatGrade(5,40,20,60,0,0,0,4,0,6,1);
-	SetMobStatGrade(6,52,25,70,0,0,0,5,0,7,1);
-	SetMobStatGrade(7,65,25,80,0,0,0,5,0,7,1);
-	SetMobStatGrade(8,80,30,100,0,0,0,7,0,8,1);
-	SetMobStatGrade(9,150,50,250,0,0,0,15,3,10,2);
+	SetMobStatGrade(0,5,5,5,0,0,0,1,0,7,1);
+	SetMobStatGrade(1,8,6,10,0,0,0,2,0,7,1);
+	SetMobStatGrade(2,15,8,20,0,0,0,3,0,8,1);
+	SetMobStatGrade(3,20,15,50,0,0,0,1,1,8,1);
+	SetMobStatGrade(4,30,15,40,0,0,0,3,0,9,1);
+	SetMobStatGrade(5,40,20,60,0,0,0,4,0,9,1);
+	SetMobStatGrade(6,50,25,70,0,0,0,5,0,10,1);
+	SetMobStatGrade(7,60,25,80,0,0,0,5,0,10,1);
+	SetMobStatGrade(8,70,30,100,5,0,0,7,0,10,1);
+	SetMobStatGrade(9,150,50,250,10,0,0,15,3,20,2);
 	SetMobStatGrade(10,100,35,175,1,0,0,17,8,10,2);
-	SetMobStatGrade(11,130,50,250,3,0,0,20,10,12,3);
-	SetMobStatGrade(12,160,60,325,5,0,0,25,13,12,3);
-	SetMobStatGrade(13,200,70,400,20,0,0,15,15,11,2);
-	SetMobStatGrade(14,240,80,450,2,0,0,40,23,11,3);
-	SetMobStatGrade(15,280,90,575,1,0,0,35,20,13,3);
-	SetMobStatGrade(16,300,100,600,30,0,0,25,15,13,4);
-	SetMobStatGrade(17,350,120,700,7,0,0,37,40,12,4);
-	SetMobStatGrade(18,500,150,900,9,0,0,50,35,12,4);
-	SetMobStatGrade(19,1000,200,1500,47,0,0,125,70,20,5);
+	SetMobStatGrade(11,120,50,250,3,0,0,20,10,12,3);
+	SetMobStatGrade(12,140,60,300,5,0,0,25,15,12,3);
+	SetMobStatGrade(13,160,70,375,2,0,0,30,20,11,2);
+	SetMobStatGrade(14,180,80,450,20,0,0,120,60,11,3);
+	SetMobStatGrade(15,200,90,550,4,0,0,60,20,40,3);
+	SetMobStatGrade(16,230,100,660,5,0,0,80,50,13,4);
+	SetMobStatGrade(17,260,120,780,7,0,0,100,65,12,4);
+	SetMobStatGrade(18,290,150,900,40,0,0,225,90,12,4);
+	SetMobStatGrade(19,500,200,1500,60,0,0,500,180,20,5);
 	SetMobStatGrade(20,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100,2147483100);
     
 }
@@ -1282,6 +1342,101 @@ int EqupArmor(int What, int Num,  int Hp, int HpGen, int Pp, int PpGen, int Atk,
 			break;
 				
 	}
+	
+}
+
+int WowShop()
+{
+
+	int Select = 0;
+	
+	Line();
+	ColorString(3,"-영혼 상점-\n");
+	Line();
+	ColorString(9,"-영혼으로 구메할 수 있는 상품들을 판매하고 있다\n");
+	
+	F1:
+	
+	Line();
+	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]");
+	printf("영혼-%d개\n",WowMoney);
+	ColorString(7,"1:패키지 상품\n");
+	//ColorString(7,"2:경험치 패키지\n");
+	//ColorString(7,"3:버프 상품\n");
+	ColorString(7,"4:탈주\n");	
+	
+	scanf("%d", &Select);
+	
+	switch(Select){
+		
+		case 1:
+			WowPackageShop();
+			break;
+		
+		case 2:
+			break;
+		
+		case 3:
+			break;
+		
+		case 4:
+			City();
+			break;
+			
+		default:
+			WowShop();
+			break;				
+		
+	}
+	
+}
+
+int WowPackageShop()
+{
+	
+	int Select = 0;
+	
+	Line();
+	ColorString(3,"-패키지 상품-\n");
+	Line();
+	ColorString(9,"-특별 패키지 상품 판매 중!\n");
+	
+	F1:
+	
+	Line();
+	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]");
+	printf("영혼-%d개\n",WowMoney);
+	ColorString(7,"1:뉴비 패키지[3영혼]\n경험치 500 획득, 모든 스텟 3씩 증가하는 가성비 갑 패키지입니다.");
+	ColorString(7,"2:성장 패키지[10영혼]\n1,000 경험치 획득, 요구 경험치량 5%감소, 모든 스텟 4씩 증가!");
+	ColorString(7,"3:초월 패키지[100영혼]\n경험치 1,000,000 획득,요구 경험치량 15% 감소, 전 스텟 30 증가. 말이 필요없습니다.");
+	ColorString(7,"4:탈주\n");	
+	
+	scanf("%d", &Select);
+	
+	switch(Select){
+		
+		case 1:
+			break;
+		
+		case 2:
+			break;
+		
+		case 3:
+			break;
+		
+		case 4:
+			City();
+			break;
+				
+		
+	}
+	
+}
+
+int BuyNewbiePackage()
+{
+	
+	
 	
 }
 
