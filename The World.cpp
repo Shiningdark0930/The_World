@@ -86,6 +86,8 @@ int ColorString(int Color,char String[]);//색깔 코드 바꾸기 함수
 
 int WowShop();
 
+int BuyNewbiePackage();
+
 int Line()
 {
 	
@@ -95,7 +97,6 @@ int Line()
 
 
 /*색깔 코드표 정리
-
 00 검정색	08 회색 
 01 파란색	09 연한 파란색	 
 02 초록색	10 연한 초록색 
@@ -1406,7 +1407,7 @@ int WowPackageShop()
 	Line();
 	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]");
 	printf("영혼-%d개\n",WowMoney);
-	ColorString(7,"1:뉴비 패키지[3영혼]\n경험치 500 획득, 모든 스텟 3씩 증가하는 가성비 갑 패키지입니다.");
+	ColorString(7,"1:뉴비 패키지[3영혼]\n경험치 500 획득, 스텟 포인트 15를 획득하는 가성비 갑 패키지입니다.");
 	ColorString(7,"2:성장 패키지[10영혼]\n1,000 경험치 획득, 요구 경험치량 5%감소, 모든 스텟 4씩 증가!");
 	ColorString(7,"3:초월 패키지[100영혼]\n경험치 1,000,000 획득,요구 경험치량 15% 감소, 전 스텟 30 증가. 말이 필요없습니다.");
 	ColorString(7,"4:탈주\n");	
@@ -1416,6 +1417,7 @@ int WowPackageShop()
 	switch(Select){
 		
 		case 1:
+			BuyNewbiePackage();
 			break;
 		
 		case 2:
@@ -1427,6 +1429,10 @@ int WowPackageShop()
 		case 4:
 			City();
 			break;
+			
+		default:
+			WowPackageShop();
+			break;
 				
 		
 	}
@@ -1436,7 +1442,27 @@ int WowPackageShop()
 int BuyNewbiePackage()
 {
 	
-	
+	if(WowMoney > 2){
+		
+		Line();
+		
+		ColorString(6,"영혼을 사용하여 뉴비 패키지를 구매하였습니다!");
+		Sleep(1000);
+		ColorString(6,"경험치가 5 상승하며, 스텟 포인트가 영구적으로 15 지급됩니다.");
+		
+		p.Exp += 500;
+		p.SP += 15;
+		
+		WowMoney -= 3;
+		
+	}
+	else{
+		
+		Line();
+		
+		ColorString(4,"보유 중인 영혼이 부족합니다.");
+		
+	}
 	
 }
 
