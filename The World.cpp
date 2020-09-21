@@ -333,7 +333,7 @@ int City()//마을
 	ColorString(7,"2:잡화상점 입장\n");
 	ColorString(7,"3:스테이더스 확인\n");
 	ColorString(7,"4:정비\n");
-	//ColorString(7,"5:환생상점\n");
+	ColorString(7,"5:환생상점\n");
 	
 	scanf("%d",&Select);
 	
@@ -360,8 +360,8 @@ int City()//마을
 			goto B1;
 			break;
 		
-		//case 5:
-			//WowShop();
+		case 5:
+			WowShop();
 			
 		default:
 			goto B1;//B1
@@ -1374,10 +1374,10 @@ int WowShop()
 			WowPackageShop();
 			break;
 		
-		case 2:
+		//case 2:
 			break;
 		
-		case 3:
+		//case 3:
 			break;
 		
 		case 4:
@@ -1408,8 +1408,8 @@ int WowPackageShop()
 	ColorString(10,"[메뉴와 호환되는 숫자를 입력하세요.]");
 	printf("영혼-%d개\n",WowMoney);
 	ColorString(7,"1:뉴비 패키지[3영혼]\n경험치 500 획득, 스텟 포인트 15를 획득하는 가성비 갑 패키지입니다.");
-	ColorString(7,"2:성장 패키지[10영혼]\n1,000 경험치 획득, 요구 경험치량 5%감소, 모든 스텟 4씩 증가!");
-	ColorString(7,"3:초월 패키지[100영혼]\n경험치 1,000,000 획득,요구 경험치량 15% 감소, 전 스텟 30 증가. 말이 필요없습니다.");
+	//ColorString(7,"2:성장 패키지[10영혼]\n1,000 경험치 획득, 요구 경험치량 5%감소, 모든 스텟 4씩 증가!");
+	//ColorString(7,"3:초월 패키지[100영혼]\n경험치 1,000,000 획득,요구 경험치량 15% 감소, 전 스텟 30 증가. 말이 필요없습니다.");
 	ColorString(7,"4:탈주\n");	
 	
 	scanf("%d", &Select);
@@ -1420,11 +1420,11 @@ int WowPackageShop()
 			BuyNewbiePackage();
 			break;
 		
-		case 2:
-			break;
+		//case 2:
+			//break;
 		
-		case 3:
-			break;
+		//case 3:
+			//break;
 		
 		case 4:
 			City();
