@@ -1446,9 +1446,9 @@ int BuyNewbiePackage()
 		
 		Line();
 		
-		ColorString(6,"영혼을 사용하여 뉴비 패키지를 구매하였습니다!");
+		ColorString(6,"영혼을 사용하여 뉴비 패키지를 구매하였습니다!\n");
 		Sleep(1000);
-		ColorString(6,"경험치가 5 상승하며, 스텟 포인트가 영구적으로 15 지급됩니다.");
+		ColorString(6,"경험치가 5 상승하며, 스텟 포인트가 영구적으로 15 지급됩니다.\n");
 		
 		p.Exp += 500;
 		p.SP += 15;
