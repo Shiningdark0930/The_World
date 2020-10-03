@@ -64,11 +64,11 @@ If you faint, Your Exp Set 0, And Your MaxExp 2X.
 
 beta 0.14(20/8/26)
 
--Add Mob Adder
+-Added Mob Creater
 
--Add More Mobs
+-Added More Mobs
 
--ReNual 1~10 Grade Mobs
+-Renewal 1~10 Grade Mobs
 
 
 beta 0.15(20/8/27)
@@ -77,7 +77,7 @@ Some Variable changed for double.
 
 beta 0.16(20/9/11)
 
-Change Level System.
+Changed Level System.
 
 beta 0.17(20/9/15)
 
