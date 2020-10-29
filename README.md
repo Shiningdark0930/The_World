@@ -23,6 +23,8 @@ and if you share this file,
 plese Express My github link.
 ```
 
+[여기서 다운로드 받으세요 / Download from here](https://github.com/Shiningdark0930/The_World/releases)
+
 ## 🌵 Major Update Notes
 ### beta 0.1
  * 기본적인 코드 작성 / Basic Code.
